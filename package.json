@@ -1,0 +1,39 @@
+{
+  "name": "beyond-snap",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.606.0",
+    "@base-ui/react": "^1.6.0",
+    "@supabase/ssr": "^0.4.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.3.0",
+    "lucide-react": "^0.408.0",
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "shadcn": "^4.13.0",
+    "tailwind-merge": "^2.4.0",
+    "tw-animate-css": "^1.2.0",
+    "typescript": "^5.4.0",
+    "yet-another-react-lightbox": "^3.19.0",
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0",
+    "tailwindcss": "^4.0.0"
+  }
+}
