@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { loginAdmin } from "@/app/actions/auth";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const supabase = createClient();
-  const [email, setEmail] = useState("");
+  const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -17,10 +16,14 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const formData = new FormData();
+    formData.set("id", id);
+    formData.set("password", password);
 
-    if (error) {
-      setError("로그인 정보가 올바르지 않습니다.");
+    const result = await loginAdmin(formData);
+
+    if (!result.success) {
+      setError(result.error ?? "로그인에 실패했습니다.");
       setLoading(false);
       return;
     }
@@ -34,11 +37,12 @@ export default function AdminLoginPage() {
       <h1 className="mb-8 text-center font-serif text-2xl">관리자 로그인</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
-          type="email"
-          placeholder="이메일"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="아이디"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
           className="w-full rounded-md border border-border px-4 py-3"
+          autoComplete="username"
           required
         />
         <input
@@ -47,6 +51,7 @@ export default function AdminLoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full rounded-md border border-border px-4 py-3"
+          autoComplete="current-password"
           required
         />
         {error && <p className="text-sm text-red-500">{error}</p>}

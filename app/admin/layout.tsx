@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { logoutAdmin } from "@/app/actions/auth";
+import { redirect } from "next/navigation";
 
 const ADMIN_NAV = [
   { href: "/admin/dashboard", label: "대시보드" },
@@ -8,8 +10,14 @@ const ADMIN_NAV = [
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  async function handleLogout() {
+    "use server";
+    await logoutAdmin();
+    redirect("/admin/login");
+  }
+
   return (
-    <div className="mx-auto flex max-w-7xl gap-8 px-4 py-10">
+    <div className="mx-auto flex max-w-7xl gap-8 px-4 py-10 mt-20">
       <aside className="w-48 shrink-0">
         <nav className="space-y-1 text-sm">
           {ADMIN_NAV.map((item) => (
@@ -22,6 +30,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Link>
           ))}
         </nav>
+        <form action={handleLogout} className="mt-4">
+          <button
+            type="submit"
+            className="block w-full rounded-md px-3 py-2 text-left text-sm text-muted-foreground hover:bg-muted"
+          >
+            로그아웃
+          </button>
+        </form>
       </aside>
       <div className="flex-1">{children}</div>
     </div>
