@@ -1,38 +1,25 @@
 import Link from "next/link";
 import { getAllGalleries } from "@/lib/data/galleries";
-import { NewGalleryForm } from "@/components/admin/NewGalleryForm";
+import { GalleryList } from "@/components/admin/GalleryList";
+
+export const dynamic = "force-dynamic"; // 관리자 페이지는 항상 최신 데이터로
 
 export default async function AdminGalleriesPage() {
   const galleries = await getAllGalleries();
 
   return (
     <div>
-      <h1 className="font-serif text-2xl">갤러리 관리</h1>
-
-      <div className="mt-8 rounded-lg border border-border p-6">
-        <h2 className="font-medium">새 갤러리 등록</h2>
-        <div className="mt-4">
-          <NewGalleryForm />
-        </div>
+      <div className="flex items-center justify-between">
+        <h1 className="font-serif text-2xl">갤러리 관리</h1>
+        <Link
+          href="/admin/galleries/new"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+        >
+          새 갤러리 등록
+        </Link>
       </div>
 
-      <div className="mt-8 divide-y divide-border">
-        {galleries.map((gallery) => (
-          <Link
-            key={gallery.id}
-            href={`/admin/galleries/${gallery.id}`}
-            className="flex items-center justify-between py-4 hover:bg-muted/50"
-          >
-            <div>
-              <p className="font-medium">{gallery.venue}</p>
-              <p className="text-sm text-muted-foreground">{gallery.title}</p>
-            </div>
-            <span className="text-sm text-muted-foreground">
-              {gallery.published ? "공개" : "비공개"}
-            </span>
-          </Link>
-        ))}
-      </div>
+      <GalleryList galleries={galleries} />
     </div>
   );
 }

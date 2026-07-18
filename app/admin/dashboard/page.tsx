@@ -1,6 +1,8 @@
 import { getAllGalleries } from "@/lib/data/galleries";
 import { isSupabaseConfigured } from "@/lib/env";
 
+export const dynamic = "force-dynamic"; // 관리자 페이지는 항상 최신 데이터로
+
 export default async function AdminDashboardPage() {
   const galleries = await getAllGalleries();
 

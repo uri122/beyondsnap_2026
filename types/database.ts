@@ -11,21 +11,20 @@ export type Gallery = {
   venue_type: CeremonyCategory;
   wedding_date: string | null;
   slug: string;
-  thumbnailUrl: string | null;
-  images: string[];
+  cover_image_url: string | null;
   description: string | null;
   published: boolean;
   sort_order: number;
   created_at: string;
 };
 
-// export type GalleryPhoto = {
-//   id: string;
-//   gallery_id: string;
-//   image_url: string;
-//   thumbnail_url: string | null;
-//   sort_order: number;
-// };
+export type GalleryPhoto = {
+  id: string;
+  gallery_id: string;
+  image_url: string;
+  thumbnail_url: string | null;
+  sort_order: number;
+};
 
 export type ProductPackage = {
   id: string;
@@ -50,14 +49,40 @@ export type SiteSetting = {
 };
 
 // Supabase 클라이언트 제네릭용 (실제로는 CLI로 생성된 Database 타입 사용 권장)
+// 주의: 최신 @supabase/postgrest-js는 각 테이블에 Relationships 필드가 있어야
+// insert()/update() 타입을 제대로 추론합니다 (없으면 조용히 never로 빠짐).
 export type Database = {
   public: {
     Tables: {
-      galleries: { Row: Gallery; Insert: Partial<Gallery>; Update: Partial<Gallery> };
-      gallery_photos: { Row: GalleryPhoto; Insert: Partial<GalleryPhoto>; Update: Partial<GalleryPhoto> };
-      products: { Row: ProductPackage; Insert: Partial<ProductPackage>; Update: Partial<ProductPackage> };
-      faqs: { Row: Faq; Insert: Partial<Faq>; Update: Partial<Faq> };
-      site_settings: { Row: SiteSetting; Insert: Partial<SiteSetting>; Update: Partial<SiteSetting> };
+      galleries: {
+        Row: Gallery;
+        Insert: Partial<Gallery>;
+        Update: Partial<Gallery>;
+        Relationships: [];
+      };
+      gallery_photos: {
+        Row: GalleryPhoto;
+        Insert: Partial<GalleryPhoto>;
+        Update: Partial<GalleryPhoto>;
+        Relationships: [];
+      };
+      products: {
+        Row: ProductPackage;
+        Insert: Partial<ProductPackage>;
+        Update: Partial<ProductPackage>;
+        Relationships: [];
+      };
+      faqs: { Row: Faq; Insert: Partial<Faq>; Update: Partial<Faq>; Relationships: [] };
+      site_settings: {
+        Row: SiteSetting;
+        Insert: Partial<SiteSetting>;
+        Update: Partial<SiteSetting>;
+        Relationships: [];
+      };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 };

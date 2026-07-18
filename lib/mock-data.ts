@@ -8,11 +8,7 @@ export const mockGalleries: Gallery[] = [
     venue_type: "bright",
     wedding_date: "2026-04-18",
     slug: "grand-hyatt-seoul-sample",
-    thumbnailUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800',
-    images: [
-      'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200',
-      'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200'
-    ],
+    cover_image_url: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200',
     description: "따뜻한 봄빛 아래 진행된 본식스냅",
     published: true,
     sort_order: 0,
@@ -25,10 +21,7 @@ export const mockGalleries: Gallery[] = [
     venue_type: "dark",
     wedding_date: "2026-10-05",
     slug: "the-chapel-cheongdam-sample",
-    thumbnailUrl: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?q=80&w=800',
-    images: [
-      'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?q=80&w=1200'
-    ],
+    cover_image_url: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?q=80&w=1200',
     description: "따뜻한 조명 아래 담은 클래식한 예식",
     published: true,
     sort_order: 1,
@@ -41,10 +34,7 @@ export const mockGalleries: Gallery[] = [
     venue_type: "outdoor",
     wedding_date: "2026-06-12",
     slug: "mayfield-hotel-sample",
-    thumbnailUrl: 'https://images.unsplash.com/photo-1544078751-58fee2d8a03b?q=80&w=800',
-    images: [
-      'https://images.unsplash.com/photo-1544078751-58fee2d8a03b?q=80&w=1200'
-    ],
+    cover_image_url: 'https://images.unsplash.com/photo-1544078751-58fee2d8a03b?q=80&w=1200',
     description: "자연광이 가득한 야외 예식 기록",
     published: true,
     sort_order: 2,
@@ -57,10 +47,7 @@ export const mockGalleries: Gallery[] = [
     venue_type: "church",
     wedding_date: "2026-05-09",
     slug: "jeongdong-church-sample",
-    thumbnailUrl: 'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=800',
-    images: [
-      'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=1200'
-    ],
+    cover_image_url: 'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=1200',
     description: "예배당 특유의 차분한 분위기를 담은 기록",
     published: true,
     sort_order: 3,
@@ -68,20 +55,20 @@ export const mockGalleries: Gallery[] = [
   },
 ];
 
-// export const mockGalleryPhotos: GalleryPhoto[] = [
-//   "mock-gallery-1",
-//   "mock-gallery-2",
-//   "mock-gallery-3",
-//   "mock-gallery-4",
-// ].flatMap((galleryId, gIdx) =>
-//   Array.from({ length: 8 }).map((_, i) => ({
-//     id: `${galleryId}-photo-${i}`,
-//     gallery_id: galleryId,
-//     image_url: photo(`${galleryId}-${i}`, 900, i % 2 === 0 ? 1100 : 700),
-//     thumbnail_url: photo(`${galleryId}-${i}`, 400, i % 2 === 0 ? 490 : 310),
-//     sort_order: i,
-//   }))
-// );
+export const mockGalleryPhotos: GalleryPhoto[] = [
+  "mock-gallery-1",
+  "mock-gallery-2",
+  "mock-gallery-3",
+  "mock-gallery-4",
+].flatMap((galleryId) =>
+  Array.from({ length: 8 }).map((_, i) => ({
+    id: `${galleryId}-photo-${i}`,
+    gallery_id: galleryId,
+    image_url: `https://picsum.photos/seed/${galleryId}-${i}/900/1100`,
+    thumbnail_url: `https://picsum.photos/seed/${galleryId}-${i}/400/490`,
+    sort_order: i,
+  }))
+);
 
 export const mockProducts: ProductPackage[] = [
   {

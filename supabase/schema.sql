@@ -10,7 +10,7 @@ create table galleries (
   id uuid primary key default uuid_generate_v4(),
   title text not null,
   venue text not null,
-  venue_type text not null check (venue_type in ('bright-hall', 'dark-hall', 'outdoor', 'church')),
+  venue_type text not null check (venue_type in ('bright', 'dark', 'outdoor', 'church')),
   wedding_date date,
   slug text unique not null,
   cover_image_url text,
