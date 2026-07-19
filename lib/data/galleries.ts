@@ -1,28 +1,23 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
-import { mockGalleries, mockGalleryPhotos } from "@/lib/mock-data";
 import type { Gallery, GalleryPhoto } from "@/types/database";
 
 export async function getPublishedGalleries(): Promise<Gallery[]> {
-  if (!isSupabaseConfigured) {
-    return mockGalleries.filter((g) => g.published).sort((a, b) => a.sort_order - b.sort_order);
-  }
+  if (!isSupabaseConfigured) return [];
 
   const supabase = createClient();
   const { data } = await supabase
     .from("galleries")
     .select("*")
     .eq("published", true)
-    .order("sort_order", { ascending: true });
+    .order("sort_order", { ascending: false });
 
   return data ?? [];
 }
 
 export async function getAllGalleries(): Promise<Gallery[]> {
-  if (!isSupabaseConfigured) {
-    return [...mockGalleries].sort((a, b) => b.sort_order - a.sort_order);
-  }
+  if (!isSupabaseConfigured) return [];
 
   const supabase = createAdminClient();
   const { data } = await supabase.from("galleries").select("*").order("sort_order", { ascending: false });
@@ -30,11 +25,7 @@ export async function getAllGalleries(): Promise<Gallery[]> {
 }
 
 export async function getGalleriesByCategory(category: string): Promise<Gallery[]> {
-  if (!isSupabaseConfigured) {
-    return mockGalleries
-      .filter((g) => g.published && g.venue_type === category)
-      .sort((a, b) => a.sort_order - b.sort_order);
-  }
+  if (!isSupabaseConfigured) return [];
 
   const supabase = createClient();
   const { data } = await supabase
@@ -42,19 +33,13 @@ export async function getGalleriesByCategory(category: string): Promise<Gallery[
     .select("*")
     .eq("published", true)
     .eq("venue_type", category)
-    .order("sort_order", { ascending: true });
+    .order("sort_order", { ascending: false });
 
   return data ?? [];
 }
 
 export async function getLatestGalleryByCategory(category: string): Promise<Gallery | null> {
-  if (!isSupabaseConfigured) {
-    return (
-      mockGalleries
-        .filter((g) => g.published && g.venue_type === category)
-        .sort((a, b) => b.created_at.localeCompare(a.created_at))[0] ?? null
-    );
-  }
+  if (!isSupabaseConfigured) return null;
 
   const supabase = createClient();
   const { data } = await supabase
@@ -70,9 +55,7 @@ export async function getLatestGalleryByCategory(category: string): Promise<Gall
 }
 
 export async function getGalleryBySlug(slug: string): Promise<Gallery | null> {
-  if (!isSupabaseConfigured) {
-    return mockGalleries.find((g) => g.slug === slug) ?? null;
-  }
+  if (!isSupabaseConfigured) return null;
 
   const supabase = createClient();
   const { data } = await supabase.from("galleries").select("*").eq("slug", slug).maybeSingle();
@@ -80,9 +63,7 @@ export async function getGalleryBySlug(slug: string): Promise<Gallery | null> {
 }
 
 export async function getGalleryById(id: string): Promise<Gallery | null> {
-  if (!isSupabaseConfigured) {
-    return mockGalleries.find((g) => g.id === id) ?? null;
-  }
+  if (!isSupabaseConfigured) return null;
 
   const supabase = createAdminClient();
   const { data } = await supabase.from("galleries").select("*").eq("id", id).maybeSingle();
@@ -90,11 +71,7 @@ export async function getGalleryById(id: string): Promise<Gallery | null> {
 }
 
 export async function getGalleryPhotos(galleryId: string): Promise<GalleryPhoto[]> {
-  if (!isSupabaseConfigured) {
-    return mockGalleryPhotos
-      .filter((p) => p.gallery_id === galleryId)
-      .sort((a, b) => a.sort_order - b.sort_order);
-  }
+  if (!isSupabaseConfigured) return [];
 
   const supabase = createAdminClient();
   const { data } = await supabase

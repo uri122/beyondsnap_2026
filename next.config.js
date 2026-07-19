@@ -8,12 +8,6 @@ const nextConfig = {
         protocol: "https",
         hostname: "pub-*.r2.dev",
       },
-      {
-        // Supabase 연결 전, 화면 확인용 더미 데이터(lib/mock-data.ts)가 쓰는 이미지 도메인.
-        // R2 붙이고 실제 데이터로 전환하면 이 항목은 지워도 됩니다.
-        protocol: "https",
-        hostname: "picsum.photos",
-      },
     ],
   },
 };
