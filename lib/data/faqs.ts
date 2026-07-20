@@ -12,3 +12,13 @@ export async function getFaqs(): Promise<Faq[]> {
   const { data } = await supabase.from("faqs").select("*").order("sort_order", { ascending: true });
   return data ?? [];
 }
+
+export async function getFaqById(id: string): Promise<Faq | null> {
+  if (!isSupabaseConfigured) {
+    return mockFaqs.find((f) => f.id === id) ?? null;
+  }
+
+  const supabase = createClient();
+  const { data } = await supabase.from("faqs").select("*").eq("id", id).maybeSingle();
+  return data;
+}
