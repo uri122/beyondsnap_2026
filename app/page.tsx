@@ -5,18 +5,25 @@ import { getLatestGalleryByCategory } from "@/lib/data/galleries";
 import { CEREMONY_CATEGORIES } from "@/lib/categories";
 
 export default async function IntroPage() {
-  const categoryShortcuts = await Promise.all(
-    CEREMONY_CATEGORIES.map(async (category) => ({
-      ...category,
-      gallery: await getLatestGalleryByCategory(category.slug),
-    }))
-  );
-
+  const [categoryShortcuts, settings] = await Promise.all([
+    Promise.all(
+      CEREMONY_CATEGORIES.map(async (category) => ({
+        ...category,
+        gallery: await getLatestGalleryByCategory(category.slug),
+      }))
+    ),
+    getSiteSettings(["hero_image_url"]),
+  ]);
+ 
+  // 관리자 화면(사이트 기본정보)에서 등록한 이미지가 있으면 그걸 쓰고,
+  // 아직 등록 전이면 기존 정적 이미지로 대체합니다.
+  const heroImageUrl = settings.hero_image_url || "/images/hero-main.jpg";
+  
   return (
     <>
       <section className="relative h-screen w-full overflow-hidden">
         <Image
-          src="/images/main.jpg"
+          src={heroImageUrl}
           alt="비욘드스냅 대표 컷"
           fill
           priority

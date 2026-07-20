@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 const ADMIN_NAV = [
   { href: "/admin/dashboard", label: "대시보드" },
+  { href: "/admin/settings", label: "기본 설정" },
   { href: "/admin/galleries", label: "갤러리 관리" },
   { href: "/admin/products", label: "상품구성 관리" },
   { href: "/admin/faq", label: "FAQ 관리" },
