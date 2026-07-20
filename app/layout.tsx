@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/common/Header";
 import { Footer } from "@/components/common/Footer";
-import { FloatingSnsButton } from "@/components/common/FloatingSnsButton";
 import { getSiteSettings } from "@/lib/data/settings";
 import "./globals.css";
 
@@ -16,14 +15,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ko">
       <body className="min-h-screen font-sans">
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <FloatingSnsButton
+        <Header
           instagram={settings.sns_instagram}
           kakaoChannel={settings.sns_kakao_channel}
           naverBlog={settings.sns_naver_blog}
         />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );
