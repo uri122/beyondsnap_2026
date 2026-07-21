@@ -1,24 +1,22 @@
 import { getFaqs } from "@/lib/data/faqs";
+import { NewFaqForm } from "@/components/admin/NewFaqForm";
+import { FaqList } from "@/components/admin/FaqList";
 
-// FAQ CRUD도 NewGalleryForm과 동일 패턴 (faqs 테이블 insert/update)
 export default async function AdminFaqPage() {
   const faqs = await getFaqs();
 
   return (
     <div>
       <h1 className="font-serif text-2xl">FAQ 관리</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        TODO: 새 FAQ 등록 폼 (NewGalleryForm과 동일 패턴으로 구현)
-      </p>
 
-      <div className="mt-8 divide-y divide-border">
-        {faqs.map((faq) => (
-          <div key={faq.id} className="py-4">
-            <p className="font-medium">Q. {faq.question}</p>
-            <p className="mt-1 text-sm text-muted-foreground">A. {faq.answer}</p>
-          </div>
-        ))}
+      <div className="mt-8 rounded-lg border border-border p-6">
+        <h2 className="font-medium">새 FAQ 등록</h2>
+        <div className="mt-4">
+          <NewFaqForm nextSortOrder={faqs.length} />
+        </div>
       </div>
+
+      <FaqList faqs={faqs} />
     </div>
   );
 }
