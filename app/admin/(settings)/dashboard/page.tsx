@@ -8,7 +8,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl">대시보드</h1>
+      <h1 className="font-serif text-2xl font-medium">대시보드</h1>
 
       {!isSupabaseConfigured && (
         <p className="mt-4 rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-700">

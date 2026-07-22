@@ -1,46 +1,27 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { logoutAdmin } from "@/app/actions/auth";
-import { redirect } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
-const ADMIN_NAV = [
-  { href: "/admin/dashboard", label: "대시보드" },
-  { href: "/admin/settings", label: "기본 설정" },
-  { href: "/admin/galleries", label: "갤러리 관리" },
-  { href: "/admin/products", label: "상품구성 관리" },
-  { href: "/admin/faq", label: "FAQ 관리" },
-];
+// 관리자 화면은 색인 제외
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  async function handleLogout() {
-    "use server";
-    await logoutAdmin();
-    redirect("/admin/login");
-  }
-
   return (
-    <div className="mx-auto flex max-w-7xl gap-8 px-4 py-10 mt-20">
-      <aside className="w-48 shrink-0">
-        <nav className="space-y-1 text-sm">
-          {ADMIN_NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block rounded-md px-3 py-2 hover:bg-muted"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <form action={handleLogout} className="mt-4">
-          <button
-            type="submit"
-            className="block w-full rounded-md px-3 py-2 text-left text-sm text-muted-foreground hover:bg-muted"
-          >
-            로그아웃
-          </button>
-        </form>
-      </aside>
-      <div className="flex-1">{children}</div>
+    <div className="min-h-screen">
+      <div className="flex h-14 items-center justify-between border-b border-border px-4 md:px-6">
+        <Link
+          href="/"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft size={16} />
+          사이트로 돌아가기
+        </Link>
+        <span className="text-sm font-medium text-muted-foreground">비욘드스냅 관리자</span>
+      </div>
+
+      {children}
     </div>
   );
 }

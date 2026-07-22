@@ -7,7 +7,7 @@ export default async function AdminProductsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl">상품구성 관리</h1>
+      <h1 className="font-serif text-2xl font-medium">상품구성 관리</h1>
       <p className="mt-2 text-sm text-muted-foreground">
         TODO: 새 패키지 등록 폼 (NewGalleryForm과 동일 패턴으로 구현)
       </p>

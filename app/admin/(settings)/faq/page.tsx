@@ -7,7 +7,7 @@ export default async function AdminFaqPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl">FAQ 관리</h1>
+      <h1 className="font-serif text-2xl font-medium">FAQ 관리</h1>
 
       <div className="mt-8 rounded-lg border border-border p-6">
         <h2 className="font-medium">새 FAQ 등록</h2>
