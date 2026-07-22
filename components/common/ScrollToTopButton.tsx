@@ -18,7 +18,7 @@ export function ScrollToTopButton() {
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="맨 위로"
-      style={{ bottom: "max(6.5rem, calc(env(safe-area-inset-bottom) + 5.75rem))" }}
+      style={{ bottom: "max(2.5rem, calc(env(safe-area-inset-bottom) + 1.75rem))" }}
       className={`fixed right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-opacity duration-300 ${
         visible ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
