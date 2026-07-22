@@ -1,27 +1,37 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/common/Header";
-import { Footer } from "@/components/common/Footer";
+import localFont from "next/font/local";
+import { Lora } from "next/font/google";
 import { getSiteSettings } from "@/lib/data/settings";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "비욘드스냅 | 본식스냅",
-  description: "비욘드스냅, 어느 하루의 눈부신 순간을 담습니다.",
-};
+const pretendard = localFont({
+  src: "./fonts/PretendardVariable.woff2",
+  display: "swap",
+  weight: "45 920",
+  variable: "--font-pretendard",
+});
+
+const lora = Lora({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-lora",
+});
+
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings(["intro_text"]);
+
+  return {
+    title: "비욘드스냅 | Beyond Snap",
+    description: settings.intro_text || "눈부신 오늘의 순간을 기록합니다.",
+  };
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getSiteSettings(["sns_instagram", "sns_kakao_channel", "sns_naver_blog"]);
-
   return (
-    <html lang="ko">
+    <html lang="ko" className={`${pretendard.variable} ${lora.variable}`}>
       <body className="min-h-screen font-sans">
-        <Header
-          instagram={settings.sns_instagram}
-          kakaoChannel={settings.sns_kakao_channel}
-          naverBlog={settings.sns_naver_blog}
-        />
-        <main>{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );

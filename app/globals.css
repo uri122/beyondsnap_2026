@@ -15,8 +15,8 @@
   --accent-foreground: oklch(0.205 0 0);
   --border: oklch(0.922 0 0);
   --radius: 0.625rem;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif;
-  --font-serif: Georgia, "Noto Serif KR", serif;
+  --font-sans: var(--font-pretendard),  ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif;
+  --font-serif: var(--font-lora), Georgia, "Noto Serif KR", serif;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -97,9 +97,9 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  --breakpoint-3xl: 120rem;   /* 1920px */
-  --breakpoint-4xl: 160rem;   /* 2560px */
-  --breakpoint-5xl: 240rem;   /* 3840px */
+  --breakpoint-3xl: 119rem;   /* 1904px */
+  --breakpoint-4xl: 159rem;   /* 2544px */
+  --breakpoint-5xl: 239rem;   /* 3824px */
 
   --container-8xl: 88rem;   /* 1408px */
   --container-9xl: 96rem;   /* 1536px */
@@ -150,5 +150,8 @@
   }
   html {
     @apply font-sans;
+  }
+  button {
+    @apply cursor-pointer;
   }
 }
