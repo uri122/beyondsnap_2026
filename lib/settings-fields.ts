@@ -13,12 +13,12 @@ export type SettingField = {
 };
 
 export const SITE_SETTING_FIELDS: SettingField[] = [
-  // {
-  //   key: "intro_text",
-  //   label: "인트로 문구 (메인 첫 화면)",
-  //   type: "textarea",
-  //   placeholder: "눈부신 오늘의 순간을 기록합니다.",
-  // },
+  {
+    key: "intro_text",
+    label: "검색엔진 소개 문구",
+    type: "text",
+    placeholder: "눈부신 오늘의 순간을 기록합니다.",
+  },
   // {
   //   key: "studio_text",
   //   label: "스튜디오 소개 문구",
