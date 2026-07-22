@@ -8,8 +8,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 
 const NAV_ITEMS = [
-  { href: "/", label: "ABOUT" },
+  // { href: "/", label: "ABOUT" },
   { href: "/ceremony", label: "CEREMONY" },
+  // { href: "/films", label: "FILMS" },
+  // { href: "/portfolio", label: "PORTFOLIO" },
   { href: "/products", label: "PRODUCTS" },
   { href: "/faq", label: "FAQ" },
 ];
@@ -21,10 +23,13 @@ type SnsLinks = {
 };
 
 export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
-const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const isMain = pathname === "/";
   const isTransparent = isMain && !isScrolled;
+  const isNavActive = (href: string) =>
+  href === "/" ? pathname === "/" : pathname.startsWith(href);
+  
   const [mobileOpen, setMobileOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false); // 데스크톱 드롭다운
   const contactRef = useRef<HTMLDivElement>(null);
@@ -83,27 +88,39 @@ useEffect(() => {
       <div
         className={`relative transition-all duration-500 ${
           isTransparent
-            ? "bg-transparent text-white"
+            ? "bg-transparent"
             : "bg-white/60 backdrop-blur-sm text-neutral-800 border-b border-neutral-100"
         }`}
       >
 
         {isTransparent && (
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/50 via-white/30 to-transparent" />
         )}
  
-        <div className={`relative mx-auto flex items-center justify-between px-3 md:px-10 transition-all duration-400 ${isTransparent ? "h-20 md:h-30" : "h-16 md:h-20"}`}>
+        <div className={`relative mx-auto flex items-center justify-between px-3 md:px-6 lg:px-10 transition-all duration-400 ${isTransparent ? "h-20 xl:h-30" : "h-16 xl:h-20"}`}>
           <Link href="/" className="flex items-center">
-            <Image src="/images/logo.png" alt="Beyond Snap Photography" width={100} height={100} className="w-36 md:w-48 h-auto" priority  />
+            <Image src="/images/logo_simple.png" alt="Beyond Snap Photography" width={100} height={100} className="w-36 lg:w-44 xl:w-48 h-auto" priority  />
           </Link>
  
           {/* 데스크톱 네비 (md 이상에서만 표시) */}
-          <nav className="hidden items-center gap-10 text-sm md:flex">
-            {NAV_ITEMS.map((item) => (
-              <Link key={item.href} href={item.href} className="text-neutral-900 hover:text-neutral-700">
-                {item.label}
-              </Link>
-            ))}
+          <nav className="hidden items-center gap-6 lg:gap-8 xl:gap-10 text-sm lg:text-base tracking-[-0.01em] md:flex">
+            {NAV_ITEMS.map((item) => {
+              const active = isNavActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`transition-colors ${
+                    active
+                      ? "font-bold text-neutral-700"
+                      : "text-neutral-900 hover:text-neutral-600"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
  
             {snsItems.length > 0 && (
               <div className="group relative">
@@ -124,9 +141,9 @@ useEffect(() => {
                 <div
                   id="header-contact-menu"
                   role="menu"
-                  className="invisible absolute right-0 top-full w-30 pt-3 opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+                  className="invisible absolute right-0 top-full w-30 pt-3 opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-90 group-focus-within:visible group-focus-within:opacity-90"
                 >
-                  <div className="border border-border bg-background text-neutral-800 shadow-lg">
+                  <div className="border border-border bg-muted text-neutral-900 shadow-lg">
                     {snsItems.map((item) => (
                       <a
                         key={item.label}
@@ -134,7 +151,7 @@ useEffect(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         role="menuitem"
-                        className="block px-5 py-2 text-xs hover:bg-muted"
+                        className="block px-5 py-2 text-xs font-semibold hover:bg-neutral-300"
                       >
                         {item.label}
                       </a>
@@ -190,16 +207,22 @@ useEffect(() => {
               </div>
  
               <nav className="flex flex-1 flex-col overflow-y-auto px-6">
-                {NAV_ITEMS.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="border-b border-border py-4 text-base normal-case tracking-normal"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                {NAV_ITEMS.map((item) => {
+                  const active = isNavActive(item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      aria-current={active ? "page" : undefined}
+                      className={`border-b border-border py-4 text-base normal-case tracking-normal ${
+                        active ? "font-semibold text-neutral-900" : "text-neutral-700"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
  
                 {snsItems.length > 0 && (
                   <div className="border-b border-border py-4">
