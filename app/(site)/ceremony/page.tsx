@@ -19,20 +19,21 @@ export default async function CeremonyPage({
     : await getPublishedGalleries();
 
   const navItems = [
-    { key: "all", href: "/ceremony", label: "ALL", active: !activeCategory },
+    { key: "all", href: "/ceremony", label: "ALL", labelKr: "전체", active: !activeCategory },
     ...CEREMONY_CATEGORIES.map((category) => ({
       key: category.slug,
       href: `/ceremony?type=${category.slug}`,
       label: category.labelEn,
+      labelKr: category.label,
       active: activeCategory === category.slug,
     })),
   ];
 
   return (
-    <section className="mx-auto max-w-11xl px-4 py-14 sm:px-6 lg:px-12">
-      <h1 className="text-center font-sans text-3xl tracking-wide">CEREMONY</h1>
+    <section className="mx-auto max-w-11xl px-4 pt-30 pb-15 sm:px-6 lg:px-12">
+      <h1 className="text-center mt-10 font-serif italic text-4xl text-neutral-400 tracking-[0.5em]">CEREMONY</h1>
 
-      <nav className="mt-8 flex flex-wrap items-center justify-center text-xs font-bold uppercase tracking-[0.1em] text-muted-foreground">
+      <nav className="mt-8 flex flex-wrap items-center justify-center text-xs md:text-sm font-medium uppercase tracking-[0.1em] text-muted-foreground">
         {navItems.map((item, i) => (
           <span key={item.key} className="flex items-center">
             {i > 0 && <span className="mx-3 text-border">/</span>}
@@ -50,7 +51,7 @@ export default async function CeremonyPage({
         ))}
       </nav>
 
-      <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-16 md:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5">
+      <div className="mt-15 grid grid-cols-2 gap-x-6 gap-y-16 md:grid-cols-3 xl:grid-cols-4 4xl:grid-cols-5">
         {galleries.map((gallery) => (
           <Link key={gallery.id} href={`/ceremony/${gallery.slug}`} className="group block">
             <div className="relative aspect-[2/3] w-full overflow-hidden bg-muted">
@@ -65,9 +66,9 @@ export default async function CeremonyPage({
                 />
               )}
             </div>
-            <div className="mt-4 text-center">
-              <p className="font-sans text-lg font-medium md:text-xl">{gallery.venue}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{gallery.title}</p>
+            <div className="mt-4">
+              <p className="font-serif text-lg md:text-xl font-medium text-foreground">{gallery.venue}</p>
+              <p className="mt-1 text-sm md:text-base font-semibold text-muted-foreground">{gallery.title}</p>
             </div>
           </Link>
         ))}

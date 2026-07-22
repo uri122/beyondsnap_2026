@@ -39,7 +39,7 @@ const PACKAGES = [
   {
     name: "Filming",
     price: "KRW 90.0",
-    items: ["4K 2Camera 촬영", "원본 + 하이라이트 15분 내외 제공", "1인 촬영으로만 진행"],
+    items: ["4K 2Camera 촬영", "원본 + FHD 하이라이트 15분 내외 제공", "1인 촬영으로만 진행"],
     hasImage: false,
   },
 ] as const;
@@ -57,7 +57,7 @@ const MAIN_SNAP_ADDONS = [
 export default function ProductsPage() {
   return (
     <section className="mx-auto max-w-8xl px-4 py-30">
-      <h1 className="my-10 font-serif font-bold italic text-3xl text-center text-neutral-300 tracking-[0.5em] md:tracking-[1em]">PRODUCTS</h1>
+      <h1 className="my-10 text-center font-serif italic text-4xl text-neutral-400 tracking-[0.5em]">PRODUCTS</h1>
 
       <div className="pt-10 divide-y-2 divide-accent-rose-line">
         {PACKAGES.map((pkg, idx) => (

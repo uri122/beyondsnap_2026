@@ -30,7 +30,7 @@ export default async function IntroPage() {
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/10 to-transparent" />
+        {/* <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/10 to-transparent" /> */}
       </section>
 
       {/* 세레모니 카테고리 숏컷: 각 카테고리 최신 게시글의 대표이미지 */}
