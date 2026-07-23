@@ -56,10 +56,10 @@ const MAIN_SNAP_ADDONS = [
 
 export default function ProductsPage() {
   return (
-    <section className="mx-auto max-w-8xl px-4 py-30">
-      <h1 className="my-10 text-center font-serif italic text-4xl text-neutral-400 tracking-[0.5em]">PRODUCTS</h1>
+    <section className="mx-auto max-w-8xl px-4 pt-24 pb-30 xl:pt-30">
+      <h1 className="text-center mt-10 font-serif italic text-4xl text-neutral-400 tracking-widest md:tracking-[0.5em]">PRODUCTS</h1>
 
-      <div className="pt-10 divide-y-2 divide-accent-rose-line">
+      <div className="pt-20 divide-y-2 divide-accent-rose-line">
         {PACKAGES.map((pkg, idx) => (
           <div
             key={pkg.name}
