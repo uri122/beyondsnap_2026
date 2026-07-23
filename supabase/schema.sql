@@ -25,6 +25,8 @@ create table gallery_photos (
   gallery_id uuid not null references galleries(id) on delete cascade,
   image_url text not null,
   thumbnail_url text,
+  width int,
+  height int,
   sort_order int not null default 0
 );
 
@@ -43,7 +45,6 @@ create table faqs (
   id uuid primary key default uuid_generate_v4(),
   question text not null,
   answer text not null,
-  category text,
   sort_order int not null default 0
 );
 

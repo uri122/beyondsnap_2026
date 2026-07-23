@@ -16,7 +16,7 @@ import type { CeremonyCategory } from "@/types/database";
 
 const MAX_FILE_SIZE_MB = 30;
 const RESIZE_MAX_WIDTH = 1600; // 이 너비를 넘는 사진만 축소, 이하는 원본 유지
-const RESIZE_QUALITY = 0.9;
+const RESIZE_QUALITY = 0.82;
 const UPLOAD_CONCURRENCY = 4;
 
 type QueuedPhoto = {
@@ -122,8 +122,11 @@ export function GalleryComposer() {
   async function uploadOnePhoto(photo: QueuedPhoto, galleryId: string, sortOrder: number) {
     updatePhoto(photo.id, { status: "uploading", progress: 0 });
 
-    // 트래픽/용량 절약을 위해 항상 리사이즈 적용 (가로 1600px 넘을 때만 축소)
-    const fileToSend = await resizeImageFile(photo.file, RESIZE_MAX_WIDTH, RESIZE_QUALITY);
+    const { file: fileToSend, width, height } = await resizeImageFile(
+      photo.file,
+      RESIZE_MAX_WIDTH,
+      RESIZE_QUALITY
+    );
 
     const urlResult = await createUploadUrl({
       galleryId,
@@ -148,6 +151,8 @@ export function GalleryComposer() {
       galleryId,
       imageUrl: urlResult.publicUrl,
       sortOrder,
+      width,
+      height,
     });
     if (!confirmResult.success) {
       updatePhoto(photo.id, { status: "error" });

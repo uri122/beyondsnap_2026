@@ -4,10 +4,15 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { r2Client, R2_BUCKET_NAME, R2_PUBLIC_URL } from "@/lib/r2/client";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
+import { UPLOAD_CACHE_CONTROL } from "@/lib/r2/constants";
 
 export async function uploadSiteImage(formData: FormData) {
   if (!isSupabaseConfigured) {
-    return { success: false, error: "Supabase가 아직 연결되지 않았어요. .env.local 설정 후 이용해주세요." };
+    return {
+      success: false,
+      error:
+        "Supabase가 아직 연결되지 않았어요. .env.local 설정 후 이용해주세요.",
+    };
   }
 
   const file = formData.get("file") as File | null;
@@ -26,7 +31,8 @@ export async function uploadSiteImage(formData: FormData) {
       Key: key,
       Body: bytes,
       ContentType: file.type,
-    })
+      CacheControl: UPLOAD_CACHE_CONTROL,
+    }),
   );
 
   const imageUrl = `${R2_PUBLIC_URL}/${key}`;

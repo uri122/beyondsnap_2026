@@ -28,7 +28,13 @@ export async function createUploadUrl(input: { galleryId: string; fileName: stri
 }
 
 // 2단계: 브라우저가 R2 업로드까지 마치면 호출 — DB에 메타데이터 row를 기록합니다.
-export async function confirmPhotoUpload(input: { galleryId: string; imageUrl: string; sortOrder: number }) {
+export async function confirmPhotoUpload(input: {
+  galleryId: string;
+  imageUrl: string;
+  sortOrder: number;
+  width: number;
+  height: number;
+}) {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("gallery_photos")
@@ -36,6 +42,8 @@ export async function confirmPhotoUpload(input: { galleryId: string; imageUrl: s
       gallery_id: input.galleryId,
       image_url: input.imageUrl,
       sort_order: input.sortOrder,
+      width: input.width,
+      height: input.height,
     })
     .select()
     .single();

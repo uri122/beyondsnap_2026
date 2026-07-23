@@ -23,9 +23,10 @@ export type GalleryPhoto = {
   gallery_id: string;
   image_url: string;
   thumbnail_url: string | null;
+  width: number | null;
+  height: number | null;
   sort_order: number;
 };
-
 export type ProductPackage = {
   id: string;
   name: string;

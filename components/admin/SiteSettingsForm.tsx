@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { updateSiteSettings } from "@/app/actions/settings";
 import { uploadSiteImage } from "@/app/actions/site-image";
 import { SITE_SETTING_FIELDS } from "@/lib/settings-fields";
+import { resizeImageFile } from "@/lib/client/upload";
 
 const HERO_IMAGE_KEY = "hero_image_url";
 
@@ -24,6 +25,9 @@ export function SiteSettingsForm({
   const [heroPreviewUrl, setHeroPreviewUrl] = useState<string | undefined>(initialHeroImageUrl);
   const [loading, setLoading] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
+
+  const HERO_RESIZE_MAX_WIDTH = 2560; // QHD 기준
+  const HERO_RESIZE_QUALITY = 0.85;
 
   // 로컬 미리보기용으로 만든 objectURL은 컴포넌트가 갱신/언마운트될 때 정리합니다.
   useEffect(() => {
@@ -50,10 +54,16 @@ export function SiteSettingsForm({
     e.preventDefault();
     setLoading(true);
 
-    // 1) 새로 선택해둔 히어로 이미지가 있으면 이때 업로드
+    // 1) 새로 선택해둔 히어로 이미지가 있으면 리사이즈 후 업로드
     if (heroFile) {
+      const { file: resizedHeroFile } = await resizeImageFile(
+        heroFile,
+        HERO_RESIZE_MAX_WIDTH,
+        HERO_RESIZE_QUALITY
+      );
+
       const formData = new FormData();
-      formData.append("file", heroFile);
+      formData.append("file", resizedHeroFile);
       formData.append("settingKey", HERO_IMAGE_KEY);
 
       const imageResult = await uploadSiteImage(formData);
@@ -90,9 +100,8 @@ export function SiteSettingsForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      {/* 히어로(메인) 이미지 */}
       <div>
-        <p className="text-sm font-medium">메인 이미지</p>
+        <p className="font-semibold text-neutral-700">메인 이미지</p>
         <p className="mt-2 text-xs leading-relaxed text-rose-600">
           가로{" "}
           <b>2560px(QHD) 이상</b>의 사진을 등록해주세요.
@@ -137,21 +146,21 @@ export function SiteSettingsForm({
 
       {/* 텍스트 설정 */}
       {SITE_SETTING_FIELDS.map((field) => (
-        <label key={field.key} className="text-sm font-medium">
+        <label key={field.key} className="font-semibold text-neutral-700">
           {field.label}
           {field.type === "textarea" ? (
             <textarea
               value={values[field.key] ?? ""}
               onChange={(e) => handleChange(field.key, e.target.value)}
               placeholder={field.placeholder}
-              className="mt-1 min-h-24 w-full rounded-md border border-border px-3 py-2 text-sm font-normal"
+              className="mt-1 min-h-24 w-full rounded-md border border-border px-3 py-2 font-normal"
             />
           ) : (
             <input
               value={values[field.key] ?? ""}
               onChange={(e) => handleChange(field.key, e.target.value)}
               placeholder={field.placeholder}
-              className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm font-normal"
+              className="mt-1 w-full rounded-md border border-border px-3 py-2 font-normal"
             />
           )}
         </label>

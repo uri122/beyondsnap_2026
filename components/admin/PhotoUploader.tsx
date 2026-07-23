@@ -6,7 +6,7 @@ import { resizeImageFile, uploadFileDirect, runWithConcurrency } from "@/lib/cli
 import { useUploadQueueStore } from "@/store/useUploadQueueStore";
 
 const RESIZE_MAX_WIDTH = 1600;
-const RESIZE_QUALITY = 0.9;
+const RESIZE_QUALITY = 0.82;;
 const UPLOAD_CONCURRENCY = 4;
 
 export function PhotoUploader({
@@ -28,7 +28,11 @@ export function PhotoUploader({
     await runWithConcurrency(queued, UPLOAD_CONCURRENCY, async (item, index) => {
       setStatus(item.id, "uploading");
 
-      const fileToSend = await resizeImageFile(item.file, RESIZE_MAX_WIDTH, RESIZE_QUALITY);
+      const { file: fileToSend, width, height } = await resizeImageFile(
+        item.file,
+        RESIZE_MAX_WIDTH,
+        RESIZE_QUALITY
+      );
 
       const urlResult = await createUploadUrl({
         galleryId,
@@ -53,11 +57,13 @@ export function PhotoUploader({
         galleryId,
         imageUrl: urlResult.publicUrl,
         sortOrder: existingCount + index,
+        width,
+        height,
       });
 
       setStatus(item.id, confirmResult.success ? "done" : "error");
     });
-
+    
     const failed = useUploadQueueStore.getState().items.filter((i) => i.status === "error");
     if (failed.length > 0) {
       alert(`${failed.length}개 파일 업로드에 실패했어요. 다시 시도해주세요.`);
