@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 
 const NAV_ITEMS = [
-  // { href: "/", label: "ABOUT" },
+  { href: "/about", label: "ABOUT" },
   { href: "/ceremony", label: "CEREMONY" },
   // { href: "/films", label: "FILMS" },
   // { href: "/portfolio", label: "PORTFOLIO" },
@@ -28,8 +28,8 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
   const isMain = pathname === "/";
   const isTransparent = isMain && !isScrolled;
   const isNavActive = (href: string) =>
-  href === "/" ? pathname === "/" : pathname.startsWith(href);
-  
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false); // 데스크톱 드롭다운
   const contactRef = useRef<HTMLDivElement>(null);
@@ -40,14 +40,14 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
     naverBlog && { href: naverBlog, label: "BLOG" },
   ].filter(Boolean) as { href: string; label: string }[];
 
-useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
- 
+
   // 메뉴(드로어) 열려있는 동안 배경 스크롤 잠금
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -55,20 +55,23 @@ useEffect(() => {
       document.body.style.overflow = "";
     };
   }, [mobileOpen]);
- 
+
   // 데스크톱 CONTACT 드롭다운: 바깥 클릭 또는 Esc 키로 닫기 (접근성)
   useEffect(() => {
     if (!contactOpen) return;
- 
+
     const handleClickOutside = (e: MouseEvent) => {
-      if (contactRef.current && !contactRef.current.contains(e.target as Node)) {
+      if (
+        contactRef.current &&
+        !contactRef.current.contains(e.target as Node)
+      ) {
         setContactOpen(false);
       }
     };
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") setContactOpen(false);
     };
- 
+
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscape);
     return () => {
@@ -76,13 +79,13 @@ useEffect(() => {
       document.removeEventListener("keydown", handleEscape);
     };
   }, [contactOpen]);
- 
+
   // 페이지 이동 시 드롭다운/드로어 닫기
   useEffect(() => {
     setContactOpen(false);
     setMobileOpen(false);
   }, [pathname]);
- 
+
   return (
     <header className="fixed top-0 left-0 w-full z-40 uppercase tracking-widest text-xs">
       <div
@@ -92,16 +95,24 @@ useEffect(() => {
             : "bg-white/60 backdrop-blur-sm text-neutral-800 border-b border-neutral-100"
         }`}
       >
-
         {isTransparent && (
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/50 via-white/30 to-transparent" />
         )}
- 
-        <div className={`relative mx-auto flex items-center justify-between px-3 md:px-6 lg:px-10 transition-all duration-400 ${isTransparent ? "h-20 xl:h-30" : "h-16 xl:h-20"}`}>
-          <Link href="/" className="flex items-center">
-            <Image src="/images/logo_simple.png" alt="Beyond Snap Photography" width={100} height={100} className="w-36 lg:w-44 xl:w-48 h-auto" priority  />
+
+        <div
+          className={`relative mx-auto flex items-center justify-between px-4 md:px-6 lg:px-12 transition-all duration-400 ${isTransparent ? "h-20 xl:h-30" : "h-16 xl:h-20"}`}
+        >
+          <Link href="/" className="flex items-center px-1">
+            <Image
+              src="/images/logo_simple.png"
+              alt="Beyond Snap Photography"
+              width={100}
+              height={100}
+              className="w-32 lg:w-44 xl:w-48 h-auto"
+              priority
+            />
           </Link>
- 
+
           {/* 데스크톱 네비 (md 이상에서만 표시) */}
           <nav className="hidden items-center gap-6 lg:gap-8 xl:gap-10 text-sm lg:text-base tracking-[-0.01em] md:flex">
             {NAV_ITEMS.map((item) => {
@@ -121,7 +132,7 @@ useEffect(() => {
                 </Link>
               );
             })}
- 
+
             {snsItems.length > 0 && (
               <div className="group relative">
                 <button
@@ -137,7 +148,7 @@ useEffect(() => {
                     className="transition-transform group-hover:rotate-180 group-focus-within:rotate-180"
                   />
                 </button>
- 
+
                 <div
                   id="header-contact-menu"
                   role="menu"
@@ -161,7 +172,7 @@ useEffect(() => {
               </div>
             )}
           </nav>
- 
+
           {/* 모바일 햄버거 버튼 (md 미만에서만 표시) */}
           <button
             type="button"
@@ -173,7 +184,7 @@ useEffect(() => {
           </button>
         </div>
       </div>
- 
+
       {/* mobile drawer */}
       <AnimatePresence>
         {mobileOpen && (
@@ -188,7 +199,7 @@ useEffect(() => {
               className="fixed inset-0 z-[90] bg-black/40 md:hidden"
               aria-hidden="true"
             />
- 
+
             <motion.div
               key="drawer"
               initial={{ x: "100%" }}
@@ -201,11 +212,15 @@ useEffect(() => {
               aria-label="사이트 메뉴"
             >
               <div className="flex h-16 shrink-0 items-center justify-end border-b border-border px-4">
-                <button type="button" onClick={() => setMobileOpen(false)} aria-label="메뉴 닫기">
+                <button
+                  type="button"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="메뉴 닫기"
+                >
                   <X size={22} />
                 </button>
               </div>
- 
+
               <nav className="flex flex-1 flex-col overflow-y-auto px-6">
                 {NAV_ITEMS.map((item) => {
                   const active = isNavActive(item.href);
@@ -216,17 +231,21 @@ useEffect(() => {
                       onClick={() => setMobileOpen(false)}
                       aria-current={active ? "page" : undefined}
                       className={`border-b border-border py-4 text-base normal-case tracking-normal ${
-                        active ? "font-semibold text-neutral-900" : "text-neutral-700"
+                        active
+                          ? "font-semibold text-neutral-900"
+                          : "text-neutral-700"
                       }`}
                     >
                       {item.label}
                     </Link>
                   );
                 })}
- 
+
                 {snsItems.length > 0 && (
                   <div className="border-b border-border py-4">
-                    <p className="text-base normal-case tracking-normal">CONTACT</p>
+                    <p className="text-base normal-case tracking-normal">
+                      CONTACT
+                    </p>
                     <div className="mt-2 flex flex-col gap-2">
                       {snsItems.map((item) => (
                         <a
