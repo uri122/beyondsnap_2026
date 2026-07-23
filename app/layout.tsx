@@ -17,20 +17,30 @@ const lora = Lora({
   variable: "--font-lora",
 });
 
-
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings(["intro_text"]);
 
   return {
     title: "비욘드스냅 | Beyond Snap",
     description: settings.intro_text || "눈부신 오늘의 순간을 기록합니다.",
+
+    // 개발중 색인 차단
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+    },
   };
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="ko" className={`${pretendard.variable} ${lora.variable}`}>
-      <body className="min-h-screen font-sans">
+      <body className="min-h-screen font-sans selection:bg-accent-rose-tint">
         {children}
       </body>
     </html>
