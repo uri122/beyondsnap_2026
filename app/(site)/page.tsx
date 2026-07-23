@@ -30,12 +30,11 @@ export default async function IntroPage() {
           sizes="100vw"
           className="object-cover"
         />
-        {/* <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/10 to-transparent" /> */}
       </section>
 
       {/* 세레모니 카테고리 숏컷: 각 카테고리 최신 게시글의 대표이미지 */}
       <section className="w-full max-w-7xl 4xl:max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 pt-25 pb-35 sm:pt-30 sm:pb-40 text-center">
-        <h2 className="text-xl sm:text-3xl tracking-[0.3em] text-neutral-800 mb-2">VENUE STYLE</h2>
+        <h2 className="text-xl sm:text-3xl tracking-[0.3em] text-neutral-800 mb-2 uppercase">Beyond the Venue</h2>
         <p className="text-xs tracking-wide text-neutral-500 mb-12 sm:mb-16">
           베뉴의 특성에 맞춘 비욘드스냅의 시선을 확인하세요
         </p>
@@ -46,7 +45,7 @@ export default async function IntroPage() {
               key={slug}
               href={`/ceremony?type=${slug}`}
               aria-label={`${label} 갤러리 보기`}
-              className="group relative block aspect-[3/4] overflow-hidden bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 drop-shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+              className="group relative block aspect-[2/3] overflow-hidden bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 drop-shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
             >
               {gallery?.cover_image_url && (
                 <Image
@@ -58,10 +57,10 @@ export default async function IntroPage() {
                 />
               )}
 
-              <div className="absolute inset-0 bg-black/30 transition-colors duration-500 motion-safe:group-hover:bg-black/60" />
+              <div className="absolute inset-0 bg-black/30 transition-colors duration-500 motion-safe:group-hover:bg-black/50" />
 
               <div className="absolute inset-0 flex items-center justify-center p-6">
-                <h3 className="text-sm sm:text-base font-semibold tracking-[0.5em] text-neutral-50 drop-shadow-[0_0_5px_rgba(0,0,0,0.8)">
+                <h3 className="text-sm tracking-[0.3em] text-background/80 px-5 py-2 pl-6 border-1 border-neutral-50/30 bg-black/30">
                   {labelEn}
                 </h3>
               </div>
