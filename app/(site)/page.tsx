@@ -10,18 +10,18 @@ export default async function IntroPage() {
       CEREMONY_CATEGORIES.map(async (category) => ({
         ...category,
         gallery: await getLatestGalleryByCategory(category.slug),
-      }))
+      })),
     ),
     getSiteSettings(["hero_image_url"]),
   ]);
- 
+
   // 관리자 화면(사이트 기본정보)에서 등록한 이미지가 있으면 그걸 쓰고,
   // 아직 등록 전이면 기존 정적 이미지로 대체합니다.
   const heroImageUrl = settings.hero_image_url || "/images/hero-main.jpg";
-  
+
   return (
     <>
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative h-[calc(100dvh-3rem)] md:h-screen w-full overflow-hidden">
         <Image
           src={heroImageUrl}
           alt="비욘드스냅 대표 컷"
@@ -34,7 +34,9 @@ export default async function IntroPage() {
 
       {/* 세레모니 카테고리 숏컷: 각 카테고리 최신 게시글의 대표이미지 */}
       <section className="w-full max-w-7xl 4xl:max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 pt-25 pb-35 sm:pt-30 sm:pb-40 text-center">
-        <h2 className="text-xl sm:text-3xl tracking-[0.3em] text-neutral-800 mb-2 uppercase">Beyond the Venue</h2>
+        <h2 className="text-xl sm:text-3xl tracking-[0.3em] text-neutral-800 mb-2 uppercase">
+          Beyond the Venue
+        </h2>
         <p className="text-xs tracking-wide text-neutral-500 mb-12 sm:mb-16">
           베뉴의 특성에 맞춘 비욘드스냅의 시선을 확인하세요
         </p>
