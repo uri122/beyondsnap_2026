@@ -10,7 +10,7 @@ create table galleries (
   id uuid primary key default uuid_generate_v4(),
   title text not null,
   venue text not null,
-  venue_type text not null check (venue_type in ('bright', 'dark', 'outdoor', 'church')),
+  venue_type text not null check (ceremony_category in ('bright', 'dark', 'outdoor', 'church')),
   wedding_date date,
   slug text unique not null,
   cover_image_url text,
@@ -28,6 +28,20 @@ create table gallery_photos (
   width int,
   height int,
   sort_order int not null default 0
+);
+
+-- Films
+create table films (
+  id uuid primary key default uuid_generate_v4(),
+  title text not null,
+  venue text not null,
+  slug text unique not null,
+  category text,
+  thumbnail_url text not null,
+  video_url text not null, -- 유튜브/비메오 등 외부 영상 링크
+  published boolean not null default false,
+  sort_order int not null default 0,
+  created_at timestamptz not null default now()
 );
 
 -- 상품구성
@@ -59,6 +73,7 @@ create table site_settings (
 -- ============================================
 alter table galleries enable row level security;
 alter table gallery_photos enable row level security;
+alter table films enable row level security;
 alter table products enable row level security;
 alter table faqs enable row level security;
 alter table site_settings enable row level security;
@@ -72,6 +87,7 @@ create policy "public read photos of published galleries" on gallery_photos
     exists (select 1 from galleries g where g.id = gallery_id and g.published = true)
   );
 
+create policy "public read published films" on films for select using (published = true);
 create policy "public read products" on products for select using (true);
 create policy "public read faqs" on faqs for select using (true);
 create policy "public read site_settings" on site_settings for select using (true);
@@ -81,6 +97,9 @@ create policy "authenticated full access galleries" on galleries
   for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
 create policy "authenticated full access gallery_photos" on gallery_photos
+  for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+create policy "authenticated full access films" on films
   for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
 create policy "authenticated full access products" on products

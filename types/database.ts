@@ -39,6 +39,19 @@ export type Faq = {
   sort_order: number;
 };
 
+export type Film = {
+  id: string;
+  venue: string;
+  title: string;
+  slug: string;
+  category: string | null;
+  thumbnail_url: string;
+  video_url: string;
+  published: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
 export type SiteSetting = {
   key: string;
   value: string;
@@ -181,6 +194,12 @@ export interface Database {
           answer?: string;
           sort_order?: number;
         };
+        Relationships: [];
+      };
+      films: {
+        Row: Film;
+        Insert: Partial<Film>;
+        Update: Partial<Film>;
         Relationships: [];
       };
       site_settings: {

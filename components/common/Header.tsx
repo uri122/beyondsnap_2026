@@ -10,7 +10,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 const NAV_ITEMS = [
   { href: "/about", label: "ABOUT" },
   { href: "/ceremony", label: "CEREMONY" },
-  // { href: "/films", label: "FILMS" },
+  { href: "/films", label: "FILMS" },
   // { href: "/portfolio", label: "PORTFOLIO" },
   { href: "/products", label: "PRODUCTS" },
   { href: "/faq", label: "FAQ" },

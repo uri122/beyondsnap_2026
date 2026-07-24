@@ -5,12 +5,17 @@ import { redirect } from "next/navigation";
 const ADMIN_NAV = [
   // { href: "/admin/dashboard", label: "대시보드" },
   { href: "/admin/core", label: "기본 설정" },
-  { href: "/admin/galleries", label: "갤러리 관리" },
-  { href: "/admin/products", label: "상품구성 관리" },
+  { href: "/admin/galleries", label: "Ceremony 관리" },
+  { href: "/admin/films", label: "Films 관리" },
+  { href: "/admin/products", label: "Products 관리" },
   { href: "/admin/faq", label: "FAQ 관리" },
 ];
 
-export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
+export default function AdminDashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   async function handleLogout() {
     "use server";
     await logoutAdmin();
