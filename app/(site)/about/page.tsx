@@ -8,56 +8,52 @@ const ABOUT_DATA = {
     {
       id: "01",
       title: "Beyond Time",
-      description:
-        "비욘드스냅은 '분명 나인데 무언가 더 깔끔하고 세련된' 고유의 아름다움을 추구합니다.",
+      description: "두분을 위한 단 하루의 시간을 있는 그대로 담아냅니다.",
     },
     {
       id: "02",
       title: "Beyond Natural",
-      description:
-        "과한 보정으로 본연의 빛을 잃기보다는, 스냅 사진 특유의 따뜻하고 진실된 감성을 담아냅니다.",
+      description: "Snap의 고유의 뜻처럼 자연스러움을 담아냅니다.",
     },
     {
       id: "03",
       title: "Beyond Snap",
-      description:
-        "오직 비욘드스냅의 철학을 완벽히 이해하는 100% 전속 작가진이 두 분의 찬란한 하루를 함께합니다.",
+      description: "비욘드의 촬영철학을 이해하는 전속작가만 두분을 담습니다.",
     },
     {
       id: "04",
       title: "Beyond Memories",
-      description:
-        "시간이 흘러도 변치 않는 고급 가죽 앨범에 그날의 감동을 영원한 작품으로 새겨드립니다.",
+      description: "10년후에도 꺼내보아도 좋은 그런 사진을 담습니다.",
     },
   ],
   teams: [
     {
       role: "수석작가",
       roleEn: "Chief Photographers",
-      members: ["김한결 작가", "김민지 작가", "이종연 작가", "조윤재 작가"],
+      members: ["김한결", "김민지", "이종연", "조윤재"],
     },
     {
       role: "작가",
       roleEn: "Photographers",
       members: [
-        "김소희 작가",
-        "김승찬 작가",
-        "김영빈 작가",
-        "김종현 작가",
-        "송영일 작가",
-        "이용수 작가",
-        "정다인 작가",
-        "조아현 작가",
-        "주청은 작가",
-        "지단비 작가",
-        "최 원 작가",
-        "최우리 작가",
+        "김소희",
+        "김승찬",
+        "김영빈",
+        "김종현",
+        "송영일",
+        "이용수",
+        "정다인",
+        "조아현",
+        "주청은",
+        "지단비",
+        "최원",
+        "최우리",
       ],
     },
     {
       role: "아이폰 스냅 작가",
       roleEn: "iPhone Photographers",
-      members: ["김주연 작가", "이소연 작가"],
+      members: ["김주연", "이소연"],
     },
   ],
 };
@@ -154,8 +150,9 @@ export default function AboutPage() {
 
               <ul className="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-4">
                 {team.members.map((member, mIdx) => (
-                  <li key={mIdx} className="text-[0.8rem] tracking-[0.1em]">
-                    {member}
+                  <li key={mIdx} className="text-sm align-middle">
+                    <span className="inline-block w-13">{member}</span>
+                    <span className="text-stone-500 pl-2">작가</span>
                   </li>
                 ))}
               </ul>
