@@ -51,25 +51,29 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
   return (
     <section className="rounded-lg border border-border p-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-medium">기본 정보</h2>
-
-        {/* 공개 여부 — 여기서 바꿔도 바로 반영되지 않고, 아래 "저장" 버튼을 눌러야 확정돼요 */}
+        <h2 className="font-semibold text-lg">기본 정보</h2>
+        {/* 공개 / 비공개 토글 */}
         <button
           type="button"
           role="switch"
           aria-checked={published}
           onClick={() => setPublished((v) => !v)}
           disabled={saving || deleting}
-          className={`relative inline-flex h-8 w-20 shrink-0 items-center rounded-full px-1 transition-colors disabled:opacity-50 ${
-            published ? "justify-start bg-green-500" : "justify-end bg-gray-300"
+          className={`relative inline-flex h-8 w-20 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+            published ? "bg-green-500" : "bg-gray-400"
           }`}
         >
-          <span className="z-10 select-none text-[11px] font-semibold text-white">
+          <span
+            className={`z-10 w-full select-none text-sm font-semibold text-white ${
+              published ? "text-left pl-2.5" : "text-right pr-2.5"
+            }`}
+          >
             {published ? "공개" : "비공개"}
           </span>
+
           <span
-            className={`absolute h-6 w-6 rounded-full bg-white shadow transition-transform ${
-              published ? "translate-x-[52px]" : "translate-x-1"
+            className={`absolute left-1 h-6 w-6 rounded-full bg-white shadow transition-transform duration-200 ${
+              published ? "translate-x-12" : "translate-x-0"
             }`}
           />
         </button>
