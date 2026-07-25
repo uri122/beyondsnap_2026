@@ -3,7 +3,6 @@ import Link from "next/link";
 import { getSiteSettings } from "@/lib/data/settings";
 import { getLatestGalleryByCategory } from "@/lib/data/galleries";
 import { CEREMONY_CATEGORIES } from "@/lib/categories";
-import { HeroPhilosophy } from "@/components/home/HeroPhilosophy";
 
 export default async function IntroPage() {
   const [categoryShortcuts, settings] = await Promise.all([
@@ -29,12 +28,6 @@ export default async function IntroPage() {
           sizes="100vw"
           className="object-cover"
         />
-        {/* 텍스트 가독성을 위한 하단 그라데이션 */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%] lg:h-[40%] bg-gradient-to-t from-black/60 via-black/20 lg:via-black/10 to-transparent"
-        />
-        <HeroPhilosophy />
       </section>
 
       {/* 세레모니 카테고리 숏컷: 각 카테고리 최신 게시글의 대표이미지 */}

@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, MessageCircle } from "lucide-react";
 
 const NAV_ITEMS = [
-  // { href: "/about", label: "ABOUT" },
+  { href: "/about", label: "ABOUT" },
   { href: "/ceremony", label: "CEREMONY" },
   { href: "/films", label: "FILMS" },
   // { href: "/portfolio", label: "PORTFOLIO" },
