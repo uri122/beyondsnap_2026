@@ -48,13 +48,13 @@ function SortableGalleryRow({ gallery }: { gallery: Gallery }) {
         href={`/admin/galleries/${gallery.id}`}
         className="flex flex-1 items-center justify-between gap-3 rounded-md px-2 py-3 hover:bg-muted/50"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {gallery.cover_image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={gallery.cover_image_url}
               alt=""
-              className="h-12 w-12 rounded-md border border-border object-cover"
+              className="h-18 w-18 rounded-md border border-border object-cover"
             />
           ) : (
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-dashed border-border text-[10px] text-muted-foreground">
@@ -63,10 +63,10 @@ function SortableGalleryRow({ gallery }: { gallery: Gallery }) {
           )}
           <div>
             <p className="font-medium">{gallery.venue}</p>
-            <p className="text-sm text-muted-foreground">{gallery.title}</p>
+            <p className="text-muted-foreground">{gallery.title}</p>
           </div>
         </div>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-muted-foreground">
           {gallery.published ? "공개" : "비공개"}
         </span>
       </Link>

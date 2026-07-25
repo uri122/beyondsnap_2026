@@ -23,8 +23,8 @@ export default function AdminDashboardLayout({
   }
 
   return (
-    <div className="mx-auto flex max-w-7xl gap-8 px-4 py-10">
-      <aside className="w-48 shrink-0">
+    <div className="mx-auto flex max-w-6xl gap-8 px-4 pt-10 pb-20">
+      <aside className="w-50 shrink-0">
         <nav className="space-y-1">
           {ADMIN_NAV.map((item) => (
             <Link

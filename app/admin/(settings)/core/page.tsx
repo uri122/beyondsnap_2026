@@ -8,9 +8,9 @@ export default async function AdminSettingsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-medium">기본 설정</h1>
+      <h1 className="text-3xl font-semibold">기본 설정</h1>
 
-      <div className="mt-8 max-w-4xl rounded-lg border border-border p-6">
+      <div className="mt-8 rounded-lg border border-border p-6">
         <SiteSettingsForm
           initialValues={settings}
           initialHeroImageUrl={settings.hero_image_url || undefined}

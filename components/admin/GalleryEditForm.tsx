@@ -10,7 +10,9 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
   const router = useRouter();
   const [venue, setVenue] = useState(gallery.venue);
   const [title, setTitle] = useState(gallery.title);
-  const [venueType, setVenueType] = useState<CeremonyCategory>(gallery.venue_type);
+  const [venueType, setVenueType] = useState<CeremonyCategory>(
+    gallery.venue_type,
+  );
   const [published, setPublished] = useState(gallery.published);
 
   const [saving, setSaving] = useState(false);
@@ -21,7 +23,12 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
     setError(null);
     setSaving(true);
 
-    const result = await updateGallery(gallery.id, { venue, title, venueType, published });
+    const result = await updateGallery(gallery.id, {
+      venue,
+      title,
+      venueType,
+      published,
+    });
 
     if (!result.success) {
       setSaving(false);
@@ -33,7 +40,11 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
   }
 
   async function handleDelete() {
-    if (!confirm(`"${gallery.venue}" 갤러리를 정말 삭제할까요? 사진까지 전부 지워지고 되돌릴 수 없어요.`)) {
+    if (
+      !confirm(
+        `"${gallery.venue}" 갤러리를 정말 삭제할까요? 사진까지 전부 지워지고 되돌릴 수 없어요.`,
+      )
+    ) {
       return;
     }
     setDeleting(true);
@@ -81,7 +92,7 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-sm text-muted-foreground">예식장명 *</label>
+          <label className="mb-1 block text-muted-foreground">예식장명 *</label>
           <input
             value={venue}
             onChange={(e) => setVenue(e.target.value)}
@@ -90,7 +101,7 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm text-muted-foreground">제목</label>
+          <label className="mb-1 block text-muted-foreground">제목 *</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -99,7 +110,7 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm text-muted-foreground">카테고리</label>
+          <label className="mb-1 block text-muted-foreground">카테고리</label>
           <select
             value={venueType}
             onChange={(e) => setVenueType(e.target.value as CeremonyCategory)}
@@ -127,9 +138,9 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
           type="button"
           onClick={handleSave}
           disabled={saving || deleting}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+          className="rounded-md bg-primary px-6 py-2 font-medium text-primary-foreground disabled:opacity-50"
         >
-          {saving ? "저장 중..." : "저장"}
+          {saving ? "저장 중..." : "저 장"}
         </button>
 
         <button

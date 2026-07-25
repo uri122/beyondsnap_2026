@@ -10,10 +10,10 @@ export default async function AdminGalleriesPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-medium">갤러리 관리</h1>
+        <h1 className="text-3xl font-semibold">Ceremony 관리</h1>
         <Link
           href="/admin/galleries/new"
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground"
         >
           새 갤러리 등록
         </Link>
