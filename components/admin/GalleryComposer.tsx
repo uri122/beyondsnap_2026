@@ -13,6 +13,22 @@ import {
   runWithConcurrency,
 } from "@/lib/client/upload";
 import type { CeremonyCategory } from "@/types/database";
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  closestCenter,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { useSortableItem } from "@/hooks/useSortableItem";
 
 const MAX_FILE_SIZE_MB = 30;
 const RESIZE_MAX_WIDTH = 1600; // 이 너비를 넘는 사진만 축소, 이하는 원본 유지
@@ -27,25 +43,109 @@ type QueuedPhoto = {
   status: "pending" | "uploading" | "done" | "error";
 };
 
+function SortableQueuedPhotoTile({
+  photo,
+  index,
+  isCover,
+  submitting,
+  onSetCover,
+  onRemove,
+}: {
+  photo: QueuedPhoto;
+  index: number;
+  isCover: boolean;
+  submitting: boolean;
+  onSetCover: () => void;
+  onRemove: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, style, isDragging } =
+    useSortableItem(photo.id, {
+      disabled: submitting,
+    });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...(submitting ? {} : { ...attributes, ...listeners })}
+      className={`group relative aspect-square touch-none overflow-hidden rounded-md border ${
+        isCover ? "border-primary ring-2 ring-primary" : "border-border"
+      } ${submitting ? "" : isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={photo.previewUrl}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className="h-full w-full object-cover"
+      />
+      <span className="absolute left-1 top-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white">
+        {index + 1}
+      </span>
+
+      {isCover && (
+        <span className="absolute bottom-1 left-1 rounded bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
+          대표
+        </span>
+      )}
+
+      {!submitting && (
+        <>
+          {!isCover && (
+            <button
+              type="button"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={onSetCover}
+              className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+            >
+              대표로 설정
+            </button>
+          )}
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={onRemove}
+            className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+          >
+            ×
+          </button>
+        </>
+      )}
+
+      {submitting && (
+        <div className="absolute inset-x-0 bottom-0 h-1 bg-black/30">
+          <div
+            className={`h-full transition-all ${photo.status === "error" ? "bg-red-500" : "bg-primary"}`}
+            style={{ width: `${photo.progress}%` }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function GalleryComposer() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [venue, setVenue] = useState("");
   const [title, setTitle] = useState("");
-  const [venueType, setVenueType] = useState<CeremonyCategory>(CEREMONY_CATEGORIES[0].slug);
+  const [venueType, setVenueType] = useState<CeremonyCategory>(
+    CEREMONY_CATEGORIES[0].slug,
+  );
   const [photos, setPhotos] = useState<QueuedPhoto[]>([]);
   const [coverId, setCoverId] = useState<string | null>(null);
   const [isPreparingFiles, setIsPreparingFiles] = useState(false);
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [rejectedNames, setRejectedNames] = useState<string[]>([]);
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
 
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const totalSizeMb = photos.reduce((sum, p) => sum + p.file.size, 0) / (1024 * 1024);
+  const totalSizeMb =
+    photos.reduce((sum, p) => sum + p.file.size, 0) / (1024 * 1024);
   const doneCount = photos.filter((p) => p.status === "done").length;
 
   // 사진을 선택해둔 채로 실수로 탭을 닫거나 새로고침하는 걸 막아줍니다.
@@ -83,7 +183,7 @@ export function GalleryComposer() {
         previewUrl: await createPreviewThumbnail(file),
         progress: 0,
         status: "pending" as const,
-      }))
+      })),
     );
     setIsPreparingFiles(false);
 
@@ -104,29 +204,43 @@ export function GalleryComposer() {
     });
   }
 
-  function handleReorderDrop(targetIndex: number) {
-    if (dragIndex === null || dragIndex === targetIndex) return;
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
     setPhotos((prev) => {
-      const next = [...prev];
-      const [moved] = next.splice(dragIndex, 1);
-      next.splice(targetIndex, 0, moved);
-      return next;
+      const oldIndex = prev.findIndex((p) => p.id === active.id);
+      const newIndex = prev.findIndex((p) => p.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return prev;
+      return arrayMove(prev, oldIndex, newIndex);
     });
-    setDragIndex(null);
   }
 
   function updatePhoto(id: string, patch: Partial<QueuedPhoto>) {
-    setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
+    setPhotos((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...patch } : p)),
+    );
   }
 
-  async function uploadOnePhoto(photo: QueuedPhoto, galleryId: string, sortOrder: number) {
+  async function uploadOnePhoto(
+    photo: QueuedPhoto,
+    galleryId: string,
+    sortOrder: number,
+  ) {
     updatePhoto(photo.id, { status: "uploading", progress: 0 });
 
-    const { file: fileToSend, width, height } = await resizeImageFile(
-      photo.file,
-      RESIZE_MAX_WIDTH,
-      RESIZE_QUALITY
-    );
+    const {
+      file: fileToSend,
+      width,
+      height,
+    } = await resizeImageFile(photo.file, RESIZE_MAX_WIDTH, RESIZE_QUALITY);
 
     const urlResult = await createUploadUrl({
       galleryId,
@@ -140,7 +254,7 @@ export function GalleryComposer() {
 
     try {
       await uploadFileDirect(fileToSend, urlResult.uploadUrl, (percent) =>
-        updatePhoto(photo.id, { progress: percent })
+        updatePhoto(photo.id, { progress: percent }),
       );
     } catch {
       updatePhoto(photo.id, { status: "error" });
@@ -160,14 +274,20 @@ export function GalleryComposer() {
     }
 
     updatePhoto(photo.id, { status: "done", progress: 100 });
-    return { success: true as const, imageUrl: urlResult.publicUrl, isCover: photo.id === coverId };
+    return {
+      success: true as const,
+      imageUrl: urlResult.publicUrl,
+      isCover: photo.id === coverId,
+    };
   }
 
   async function handleSubmit(mode: "draft" | "publish_ready") {
     setError(null);
 
     if (!isSupabaseConfigured) {
-      setError("Supabase가 아직 연결되지 않았어요. .env.local 설정 후 이용해주세요.");
+      setError(
+        "Supabase가 아직 연결되지 않았어요. .env.local 설정 후 이용해주세요.",
+      );
       return;
     }
     if (!venue.trim()) {
@@ -175,17 +295,26 @@ export function GalleryComposer() {
       return;
     }
     if (mode === "publish_ready" && !title.trim()) {
-      setError("등록하려면 제목도 입력해주세요. (임시저장은 예식장명만으로도 가능해요)");
+      setError(
+        "등록하려면 제목도 입력해주세요. (임시저장은 예식장명만으로도 가능해요)",
+      );
       return;
     }
     if (mode === "publish_ready" && photos.length === 0) {
-      setError("등록하려면 사진을 최소 1장 이상 추가해주세요. (임시저장은 사진 없이도 가능해요)");
+      setError(
+        "등록하려면 사진을 최소 1장 이상 추가해주세요. (임시저장은 사진 없이도 가능해요)",
+      );
       return;
     }
 
     setSubmitting(true);
 
-    const result = await createGallery({ venue, title, venueType, published: mode === "publish_ready" });
+    const result = await createGallery({
+      venue,
+      title,
+      venueType,
+      published: mode === "publish_ready",
+    });
     if (!result.success) {
       setError(result.error);
       setSubmitting(false);
@@ -197,11 +326,15 @@ export function GalleryComposer() {
     let coverUrl: string | null = null;
 
     if (photos.length > 0) {
-      await runWithConcurrency(photos, UPLOAD_CONCURRENCY, async (photo, index) => {
-        const uploadResult = await uploadOnePhoto(photo, galleryId, index);
-        if (!uploadResult.success) failedNames.push(uploadResult.name);
-        else if (uploadResult.isCover) coverUrl = uploadResult.imageUrl;
-      });
+      await runWithConcurrency(
+        photos,
+        UPLOAD_CONCURRENCY,
+        async (photo, index) => {
+          const uploadResult = await uploadOnePhoto(photo, galleryId, index);
+          if (!uploadResult.success) failedNames.push(uploadResult.name);
+          else if (uploadResult.isCover) coverUrl = uploadResult.imageUrl;
+        },
+      );
     }
 
     if (coverUrl) {
@@ -210,7 +343,7 @@ export function GalleryComposer() {
 
     if (failedNames.length > 0) {
       alert(
-        `갤러리는 저장됐지만 ${failedNames.length}개 사진 업로드는 실패했어요:\n${failedNames.join(", ")}\n상세 페이지에서 다시 시도해주세요.\n\n(콘솔에 CORS 관련 에러가 있다면 R2 버킷 CORS 설정을 확인해주세요)`
+        `갤러리는 저장됐지만 ${failedNames.length}개 사진 업로드는 실패했어요:\n${failedNames.join(", ")}\n상세 페이지에서 다시 시도해주세요.\n\n(콘솔에 CORS 관련 에러가 있다면 R2 버킷 CORS 설정을 확인해주세요)`,
       );
     }
 
@@ -225,7 +358,9 @@ export function GalleryComposer() {
         <h2 className="font-medium">기본 정보</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm text-muted-foreground">예식장명 *</label>
+            <label className="mb-1 block text-sm text-muted-foreground">
+              예식장명 *
+            </label>
             <input
               value={venue}
               onChange={(e) => setVenue(e.target.value)}
@@ -235,7 +370,9 @@ export function GalleryComposer() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-muted-foreground">제목</label>
+            <label className="mb-1 block text-sm text-muted-foreground">
+              제목
+            </label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -245,7 +382,9 @@ export function GalleryComposer() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-muted-foreground">카테고리</label>
+            <label className="mb-1 block text-sm text-muted-foreground">
+              카테고리
+            </label>
             <select
               value={venueType}
               onChange={(e) => setVenueType(e.target.value as CeremonyCategory)}
@@ -267,9 +406,10 @@ export function GalleryComposer() {
         <h2 className="font-medium">사진</h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          권장 규격: 가로 {RESIZE_MAX_WIDTH}px 이하 · JPG 또는 PNG · 장당 {MAX_FILE_SIZE_MB}MB
-          이하. 트래픽/용량 절약을 위해 가로 {RESIZE_MAX_WIDTH}px가 넘는 사진은 업로드 시
-          자동으로 {RESIZE_MAX_WIDTH}px로 축소돼요 (이하인 사진은 원본 그대로 유지).
+          권장 규격: 가로 {RESIZE_MAX_WIDTH}px 이하 · JPG 또는 PNG · 장당{" "}
+          {MAX_FILE_SIZE_MB}MB 이하. 트래픽/용량 절약을 위해 가로{" "}
+          {RESIZE_MAX_WIDTH}px가 넘는 사진은 업로드 시 자동으로{" "}
+          {RESIZE_MAX_WIDTH}px로 축소돼요 (이하인 사진은 원본 그대로 유지).
         </p>
 
         <div
@@ -288,8 +428,12 @@ export function GalleryComposer() {
             isDragOver ? "border-primary bg-primary/5" : "border-border"
           }`}
         >
-          <p className="text-sm">사진을 여기로 드래그하거나 클릭해서 선택하세요</p>
-          <p className="mt-1 text-xs text-muted-foreground">여러 장 한 번에 선택 가능 (50장 정도도 OK)</p>
+          <p className="text-sm">
+            사진을 여기로 드래그하거나 클릭해서 선택하세요
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            여러 장 한 번에 선택 가능 (50장 정도도 OK)
+          </p>
           <input
             ref={fileInputRef}
             type="file"
@@ -302,91 +446,48 @@ export function GalleryComposer() {
 
         {rejectedNames.length > 0 && (
           <p className="mt-2 text-sm text-red-500">
-            다음 파일은 제외됐어요 (이미지 파일 {MAX_FILE_SIZE_MB}MB 이하만 가능): {rejectedNames.join(", ")}
+            다음 파일은 제외됐어요 (이미지 파일 {MAX_FILE_SIZE_MB}MB 이하만
+            가능): {rejectedNames.join(", ")}
           </p>
         )}
 
         {isPreparingFiles && (
-          <p className="mt-4 text-sm text-muted-foreground">미리보기 준비 중...</p>
+          <p className="mt-4 text-sm text-muted-foreground">
+            미리보기 준비 중...
+          </p>
         )}
 
         {photos.length > 0 && (
           <>
             <p className="mt-4 text-sm text-muted-foreground">
-              {photos.length}장 선택됨 · 총 {totalSizeMb.toFixed(1)}MB · 드래그해서 순서 변경,
-              사진에 마우스를 올려 대표 사진 지정
+              {photos.length}장 선택됨 · 총 {totalSizeMb.toFixed(1)}MB ·
+              드래그해서 순서 변경, 사진에 마우스를 올려 대표 사진 지정
               {submitting && ` · 업로드 완료 ${doneCount}/${photos.length}`}
             </p>
-            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-6">
-              {photos.map((photo, index) => (
-                <div
-                  key={photo.id}
-                  draggable={!submitting}
-                  onDragStart={() => setDragIndex(index)}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => handleReorderDrop(index)}
-                  className={`group relative aspect-square overflow-hidden rounded-md border ${
-                    coverId === photo.id ? "border-primary ring-2 ring-primary" : "border-border"
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={photo.previewUrl}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover"
-                  />
-                  <span className="absolute left-1 top-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white">
-                    {index + 1}
-                  </span>
-
-                  {coverId === photo.id && (
-                    <span className="absolute bottom-1 left-1 rounded bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
-                      대표
-                    </span>
-                  )}
-
-                  {!submitting && (
-                    <>
-                      {coverId !== photo.id && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setCoverId(photo.id);
-                          }}
-                          className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          대표로 설정
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removePhoto(photo.id);
-                        }}
-                        className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
-                      >
-                        ×
-                      </button>
-                    </>
-                  )}
-
-                  {submitting && (
-                    <div className="absolute inset-x-0 bottom-0 h-1 bg-black/30">
-                      <div
-                        className={`h-full transition-all ${
-                          photo.status === "error" ? "bg-red-500" : "bg-primary"
-                        }`}
-                        style={{ width: `${photo.progress}%` }}
-                      />
-                    </div>
-                  )}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={photos.map((p) => p.id)}
+                strategy={rectSortingStrategy}
+              >
+                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-6">
+                  {photos.map((photo, index) => (
+                    <SortableQueuedPhotoTile
+                      key={photo.id}
+                      photo={photo}
+                      index={index}
+                      isCover={coverId === photo.id}
+                      submitting={submitting}
+                      onSetCover={() => setCoverId(photo.id)}
+                      onRemove={() => removePhoto(photo.id)}
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>{" "}
           </>
         )}
       </section>
@@ -406,7 +507,11 @@ export function GalleryComposer() {
           type="button"
           onClick={() => handleSubmit("publish_ready")}
           disabled={submitting || photos.length === 0}
-          title={photos.length === 0 ? "사진을 최소 1장 이상 추가해주세요" : undefined}
+          title={
+            photos.length === 0
+              ? "사진을 최소 1장 이상 추가해주세요"
+              : undefined
+          }
           className="flex-1 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
           {submitting

@@ -1,6 +1,6 @@
 {
   "name": "beyond-snap",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,6 +12,9 @@
     "@aws-sdk/client-s3": "^3.606.0",
     "@aws-sdk/s3-request-presigner": "^3.1089.0",
     "@base-ui/react": "^1.6.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@supabase/ssr": "^0.4.0",
     "@supabase/supabase-js": "^2.45.0",
     "class-variance-authority": "^0.7.0",
