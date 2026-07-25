@@ -62,7 +62,7 @@ export default async function CeremonyPage({
         ))}
       </nav>
 
-      <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-16 md:grid-cols-3 xl:grid-cols-4 4xl:grid-cols-5">
+      <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-16 md:grid-cols-3 xl:grid-cols-4 xl:gap-x-6 4xl:grid-cols-5">
         {galleries.map((gallery) => (
           <Link
             key={gallery.id}
@@ -84,10 +84,10 @@ export default async function CeremonyPage({
               </div>
             </div>
             <div className="mt-3 md:mt-3">
-              <p className="font-serif lg:text-xl font-medium text-foreground">
+              <p className="font-serif text-sm lg:text-xl font-medium text-foreground">
                 {gallery.venue}
               </p>
-              <p className="text-sm lg:text-base font-medium text-muted-foreground">
+              <p className="mt-1 text-xs lg:text-base text-muted-foreground">
                 {gallery.title}
               </p>
             </div>

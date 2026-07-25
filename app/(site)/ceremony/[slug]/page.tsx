@@ -55,16 +55,16 @@ export default async function GalleryDetailPage({
   const listHref = `/ceremony?type=${gallery.venue_type}`;
 
   const listButtonClass =
-    "min-w-20 shink-0 inline-flex justify-center items-center gap-1.5 rounded-sm border border-border px-4 py-2 text-xs font-medium hover:bg-muted";
+    "min-w-20 shink-0 inline-flex justify-center items-center gap-1.5 rounded-sm border border-border px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted";
 
   return (
-    <section className="mx-auto max-w-6xl px-3 py-24 text-center sm:px-6 sm:py-24">
+    <section className="mx-auto max-w-6xl px-3 py-24 text-center sm:px-6 sm:py-24 lg:py-24 2xl:py-28 4xl:py-36">
       {/* 상단: 목록으로 */}
       <Link href={listHref} className={listButtonClass}>
         목록으로
       </Link>
 
-      <p className="mt-15 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+      <p className="mt-15 text-xs uppercase tracking-[0.2em] text-accent-rose">
         {categoryLabel}
       </p>
 
@@ -86,7 +86,7 @@ export default async function GalleryDetailPage({
             <Link
               href={`/ceremony/${prev.slug}`}
               aria-label={`이전 갤러리: ${prev.venue} ${prev.title}`}
-              className="min-w-40 flex-1 rounded-md border border-border px-3 py-2 hover:bg-muted/50"
+              className="min-w-40 flex-1 flex flex-col gap-0.5 rounded-md border border-border px-3 py-2 hover:bg-muted/50"
             >
               <div className="flex items-center gap-1.5">
                 <ArrowLeft
@@ -97,11 +97,9 @@ export default async function GalleryDetailPage({
                 <span className="text-muted-foreground">이전</span>
               </div>
               <div className="pl-5 text-left">
-                <span className="font-medium">{prev.venue}</span>
-                {/* <span className="text-xs text-muted-foreground">
-                  {" "}
-                  · {prev.title}
-                </span> */}
+                <span className="font-medium text-accent-rose">
+                  {prev.title}
+                </span>
               </div>
             </Link>
           ) : (
@@ -112,7 +110,7 @@ export default async function GalleryDetailPage({
             <Link
               href={`/ceremony/${next.slug}`}
               aria-label={`다음 갤러리: ${next.venue} ${next.title}`}
-              className="min-w-40 flex-1 flex flex-col items-end gap-1.5 rounded-md border border-border px-3 py-2 text-right hover:bg-muted/50"
+              className="min-w-40 flex-1 flex flex-col items-end gap-1 rounded-md border border-border px-3 py-2 text-right hover:bg-muted/50"
             >
               <div className="flex items-center gap-1.5">
                 <span className="text-muted-foreground">다음</span>
@@ -123,11 +121,8 @@ export default async function GalleryDetailPage({
                 />
               </div>
               <div className="pr-5">
-                {/* <span className="text-xs text-muted-foreground">
-                  {next.title} ·{" "}
-                </span> */}
-                <span className="font-medium">
-                  {next.venue} 아란더ㅐㄴㅇ로미
+                <span className="font-medium text-accent-rose">
+                  {next.title}
                 </span>
               </div>
             </Link>
