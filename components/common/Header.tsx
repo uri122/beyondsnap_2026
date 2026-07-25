@@ -101,15 +101,15 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
           )}
 
           <div
-            className={`relative mx-auto flex items-center justify-between px-4 md:px-6 lg:px-12 transition-all duration-400 ${isTransparent ? "h-20 xl:h-30" : "h-16 xl:h-20"}`}
+            className={`relative mx-auto flex items-center justify-between px-4 md:px-6 lg:px-12 transition-all duration-400 ${isTransparent ? "h-24 lg:h-30 2xl:h-34 4xl:h-40" : "h-16 lg:h-20 2xl:h-22 4xl:h-28"}`}
           >
-            <Link href="/" className="flex items-center px-1">
+            <Link href="/" className="flex items-center">
               <Image
-                src="/images/logo_simple.png"
+                src="/images/logo.png"
                 alt="Beyond Snap Photography"
-                width={100}
-                height={100}
-                className="w-32 lg:w-44 xl:w-48 h-auto"
+                width={256}
+                height={72}
+                className="w-40 lg:w-50 2xl:w-58 4xl:w-64 h-auto"
                 priority
               />
             </Link>
