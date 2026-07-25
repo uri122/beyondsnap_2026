@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { JustifiedText } from "@/components/common/JustifiedText";
 
 const ABOUT_DATA = {
   philosophy: [
@@ -13,7 +14,7 @@ const ABOUT_DATA = {
     {
       id: "02",
       title: "Beyond Natural",
-      description: "Snap의 고유의 뜻처럼 자연스러움을 담아냅니다.",
+      description: "스냅의 고유의 뜻처럼 자연스러움을 담아냅니다.",
     },
     {
       id: "03",
@@ -151,7 +152,7 @@ export default function AboutPage() {
               <ul className="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-4">
                 {team.members.map((member, mIdx) => (
                   <li key={mIdx} className="text-sm align-middle">
-                    <span className="inline-block w-13">{member}</span>
+                    <JustifiedText text={member} width="3em" />
                     <span className="text-stone-500 pl-2">작가</span>
                   </li>
                 ))}
