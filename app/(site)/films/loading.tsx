@@ -5,7 +5,7 @@ export default function FilmsLoading() {
         FILMS
       </h1>
 
-      <div role="status" aria-live="polite" className="mt-10">
+      <div role="status" aria-live="polite" className="mt-30">
         <span className="sr-only">목록을 불러오는 중입니다</span>
 
         <div

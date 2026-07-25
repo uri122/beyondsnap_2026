@@ -5,7 +5,7 @@ export default function FilmsLoading() {
         CEREMONY
       </h1>
 
-      <div role="status" aria-live="polite" className="mt-10">
+      <div role="status" aria-live="polite" className="mt-20">
         <span className="sr-only">목록을 불러오는 중입니다</span>
 
         <div
@@ -14,7 +14,7 @@ export default function FilmsLoading() {
         >
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="aspect-video w-full rounded-md bg-muted" />
+              <div className="aspect-[2/3] w-full rounded-md bg-muted" />
               <div className="mt-3 h-5 w-2/3 rounded bg-muted" />
               <div className="mt-2 h-4 w-1/3 rounded bg-muted" />
             </div>
