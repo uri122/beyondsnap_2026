@@ -1,4 +1,9 @@
-import type { Gallery, GalleryPhoto, ProductPackage, Faq } from "@/types/database";
+import type {
+  Gallery,
+  GalleryPhoto,
+  ProductPackage,
+  Faq,
+} from "@/types/database";
 
 export const mockGalleries: Gallery[] = [
   {
@@ -8,7 +13,8 @@ export const mockGalleries: Gallery[] = [
     venue_type: "bright",
     wedding_date: "2026-04-18",
     slug: "grand-hyatt-seoul-sample",
-    cover_image_url: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200',
+    cover_image_url:
+      "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200",
     description: "따뜻한 봄빛 아래 진행된 본식스냅",
     published: true,
     sort_order: 0,
@@ -21,7 +27,8 @@ export const mockGalleries: Gallery[] = [
     venue_type: "dark",
     wedding_date: "2026-10-05",
     slug: "the-chapel-cheongdam-sample",
-    cover_image_url: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?q=80&w=1200',
+    cover_image_url:
+      "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?q=80&w=1200",
     description: "따뜻한 조명 아래 담은 클래식한 예식",
     published: true,
     sort_order: 1,
@@ -34,7 +41,8 @@ export const mockGalleries: Gallery[] = [
     venue_type: "outdoor",
     wedding_date: "2026-06-12",
     slug: "mayfield-hotel-sample",
-    cover_image_url: 'https://images.unsplash.com/photo-1544078751-58fee2d8a03b?q=80&w=1200',
+    cover_image_url:
+      "https://images.unsplash.com/photo-1544078751-58fee2d8a03b?q=80&w=1200",
     description: "자연광이 가득한 야외 예식 기록",
     published: true,
     sort_order: 2,
@@ -47,7 +55,8 @@ export const mockGalleries: Gallery[] = [
     venue_type: "church",
     wedding_date: "2026-05-09",
     slug: "jeongdong-church-sample",
-    cover_image_url: 'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=1200',
+    cover_image_url:
+      "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=1200",
     description: "예배당 특유의 차분한 분위기를 담은 기록",
     published: true,
     sort_order: 3,
@@ -67,7 +76,7 @@ export const mockGalleryPhotos: GalleryPhoto[] = [
     image_url: `https://picsum.photos/seed/${galleryId}-${i}/900/1100`,
     thumbnail_url: `https://picsum.photos/seed/${galleryId}-${i}/400/490`,
     sort_order: i,
-  }))
+  })),
 );
 
 export const mockProducts: ProductPackage[] = [
@@ -123,7 +132,8 @@ export const mockFaqs: Faq[] = [
   {
     id: "mock-faq-1",
     question: "예약은 얼마나 전에 해야 하나요?",
-    answer: "본식 3~6개월 전 예약을 권장드려요. 성수기(봄/가을)는 더 일찍 마감될 수 있습니다.",
+    answer:
+      "본식 3~6개월 전 예약을 권장드려요. 성수기(봄/가을)는 더 일찍 마감될 수 있습니다.",
     sort_order: 0,
   },
   {
@@ -150,8 +160,10 @@ export const mockSiteSettings: Record<string, string> = {
   intro_text: "눈부신 오늘의 순간을 기록합니다.\n비욘드스냅이 함께합니다.",
   studio_text:
     "우리는 인위적인 연출보다 그날의 진짜 표정과 온도를 남기는 걸 더 중요하게 생각합니다.\n\n촬영 스타일, 작가 소개가 이 자리에 들어갑니다.",
-  booking_guide_text: "촬영 문의는 아래 SNS 채널을 통해 편하게 남겨주세요. 확인 후 순차적으로 연락드립니다.",
+  booking_guide_text:
+    "촬영 문의는 아래 SNS 채널을 통해 편하게 남겨주세요. 확인 후 순차적으로 연락드립니다.",
   sns_instagram: "https://instagram.com/anotherday.sample",
   sns_kakao_channel: "https://pf.kakao.com/anotherday.sample",
   sns_naver_blog: "https://blog.naver.com/anotherday.sample",
+  sns_instagram2: "https://instagram.com/anotherday.sample",
 };

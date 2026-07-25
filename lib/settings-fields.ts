@@ -27,19 +27,25 @@ export const SITE_SETTING_FIELDS: SettingField[] = [
   // },
   {
     key: "sns_instagram",
-    label: "인스타그램 URL",
+    label: "비욘드스냅 인스타그램 URL (미입력시 버튼 미노출)",
+    type: "text",
+    placeholder: "https://instagram.com/계정명",
+  },
+  {
+    key: "sns_instagram2",
+    label: "아이폰스냅 인스타그램 URL (미입력시 버튼 미노출)",
     type: "text",
     placeholder: "https://instagram.com/계정명",
   },
   {
     key: "sns_kakao_channel",
-    label: "카카오 채널 URL",
+    label: "카카오 채널 URL (미입력시 버튼 미노출)",
     type: "text",
     placeholder: "https://pf.kakao.com/채널ID",
   },
   {
     key: "sns_naver_blog",
-    label: "네이버 블로그 URL",
+    label: "네이버 블로그 URL (미입력시 버튼 미노출)",
     type: "text",
     placeholder: "https://blog.naver.com/블로그ID",
   },

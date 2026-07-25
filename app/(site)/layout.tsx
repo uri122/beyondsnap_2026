@@ -11,6 +11,7 @@ export default async function SiteLayout({
     "sns_instagram",
     "sns_kakao_channel",
     "sns_naver_blog",
+    "sns_instagram2",
   ]);
 
   return (
@@ -19,6 +20,7 @@ export default async function SiteLayout({
         instagram={settings.sns_instagram}
         kakaoChannel={settings.sns_kakao_channel}
         naverBlog={settings.sns_naver_blog}
+        instagram2={settings.sns_instagram2}
       />
       <main className="flex-1">{children}</main>
       <Footer />

@@ -18,11 +18,17 @@ const NAV_ITEMS = [
 
 type SnsLinks = {
   instagram?: string;
+  instagram2?: string;
   kakaoChannel?: string;
   naverBlog?: string;
 };
 
-export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
+export function Header({
+  instagram,
+  kakaoChannel,
+  naverBlog,
+  instagram2,
+}: SnsLinks) {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const isMain = pathname === "/";
@@ -35,10 +41,11 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
   const contactRef = useRef<HTMLDivElement>(null);
 
   const snsItems = [
-    kakaoChannel && { href: kakaoChannel, label: "KAKAO" },
-    instagram && { href: instagram, label: "INSTAGRAM" },
-    naverBlog && { href: naverBlog, label: "BLOG" },
-  ].filter(Boolean) as { href: string; label: string }[];
+    naverBlog && { href: naverBlog, key: "blog", label: "BLOG" },
+    kakaoChannel && { href: kakaoChannel, key: "kakao", label: "CHANNEL" },
+    instagram && { href: instagram, key: "instagram", label: "BEYOND" },
+    instagram2 && { href: instagram2, key: "instagram", label: "i-BEYOND" },
+  ].filter(Boolean) as { href: string; key: string; label: string }[];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -88,7 +95,7 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-40 uppercase tracking-widest text-xs">
+      <header className="fixed top-0 left-0 w-full z-40 tracking-widest text-xs">
         <div
           className={`relative transition-all duration-500 ${
             isTransparent
@@ -123,7 +130,7 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
                     key={item.href}
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`transition-colors ${
+                    className={`transition-colors uppercase ${
                       active
                         ? "font-bold text-neutral-700"
                         : "text-neutral-900 hover:text-neutral-600"
@@ -153,7 +160,7 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
                   <div
                     id="header-contact-menu"
                     role="menu"
-                    className="invisible absolute right-0 top-full w-30 pt-3 opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-90 group-focus-within:visible group-focus-within:opacity-90"
+                    className="invisible absolute right-0 top-full w-28 pt-3 opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-90 group-focus-within:visible group-focus-within:opacity-90"
                   >
                     <div className="border border-border bg-muted text-neutral-900 shadow-lg">
                       {snsItems.map((item) => (
@@ -163,9 +170,49 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
                           target="_blank"
                           rel="noopener noreferrer"
                           role="menuitem"
-                          className="block px-5 py-2 text-xs font-semibold hover:bg-neutral-300"
+                          className="block px-4 py-2 flex gap-2 items-center hover:bg-neutral-300"
                         >
-                          {item.label}
+                          <div className="w-4 flex items-center justify-center">
+                            {item.key === "kakao" && (
+                              <MessageCircle size={16} />
+                            )}
+                            {item.key === "blog" && (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="12"
+                                height="12"
+                                viewBox="0 0 924.43 1000"
+                                fill="currentColor"
+                              >
+                                <path d="M344.06 286.98c-70.27 0-135.39 22.03-188.86 59.55V70.18H0v858.3h155.2v-42.62c53.47 37.51 118.59 59.55 188.86 59.55 181.82 0 329.21-147.39 329.21-329.21s-147.4-329.22-329.21-329.22zm-14.78 514.64c-99.13 0-179.49-83.08-179.49-185.56S230.15 430.5 329.28 430.5s179.49 83.08 179.49 185.56-80.36 185.56-179.49 185.56zM862.35 0h62.08v1000h-62.08z" />
+                              </svg>
+                            )}
+                            {item.key === "instagram" && (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <rect
+                                  width="20"
+                                  height="20"
+                                  x="2"
+                                  y="2"
+                                  rx="5"
+                                  ry="5"
+                                />
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                              </svg>
+                            )}
+                          </div>
+                          <span className="text-xs">{item.label}</span>
                         </a>
                       ))}
                     </div>
@@ -250,20 +297,18 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
       </header>
       {snsItems.length > 0 && (
         <div className="fixed bottom-0 left-0 w-full z-30 bg-muted/75 backdrop-blur-md border border-neutral-200 md:hidden">
-          <div className="flex flex-row-reverse h-12 w-full divide-x divide-neutral-200">
+          <div className="flex h-12 w-full divide-x divide-neutral-200">
             {snsItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-1.5 bg-transparent active:bg-neutral-50 hover:bg-neutral-50 transition-colors"
+                className="flex-1 px-2 flex items-center justify-center gap-1.5 bg-transparent active:bg-neutral-50 hover:bg-neutral-50 transition-colors"
               >
-                {item.label === "KAKAO" && (
-                  <MessageCircle size={14} className="text-accent-rose" />
-                )}
-                {item.label === "BLOG" && (
-                  <div className="text-accent-rose">
+                <div className="w-[14px] h-[14px] flex items-center justify-center text-accent-rose">
+                  {item.key === "kakao" && <MessageCircle size={14} />}
+                  {item.key === "blog" && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="12"
@@ -273,9 +318,8 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
                     >
                       <path d="M344.06 286.98c-70.27 0-135.39 22.03-188.86 59.55V70.18H0v858.3h155.2v-42.62c53.47 37.51 118.59 59.55 188.86 59.55 181.82 0 329.21-147.39 329.21-329.21s-147.4-329.22-329.21-329.22zm-14.78 514.64c-99.13 0-179.49-83.08-179.49-185.56S230.15 430.5 329.28 430.5s179.49 83.08 179.49 185.56-80.36 185.56-179.49 185.56zM862.35 0h62.08v1000h-62.08z" />
                     </svg>
-                  </div>
                 )}
-                {item.label === "INSTAGRAM" && (
+                  {item.key === "instagram" && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="14"
@@ -286,14 +330,14 @@ export function Header({ instagram, kakaoChannel, naverBlog }: SnsLinks) {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-accent-rose"
                   >
                     <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                     <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
                   </svg>
                 )}
-                <span className="text-[11px] sm:text-xs font-medium tracking-[0.1em] text-neutral-600 uppercase pt-0.5">
+                </div>
+                <span className="text-[11px] sm:text-xs font-medium text-neutral-600">
                   {item.label}
                 </span>
               </a>

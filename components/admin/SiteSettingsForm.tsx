@@ -22,7 +22,9 @@ export function SiteSettingsForm({
   const [values, setValues] = useState<Record<string, string>>(initialValues);
   // heroFile: "저장"을 누르기 전까지는 아직 서버에 안 올라간, 선택만 해둔 파일
   const [heroFile, setHeroFile] = useState<File | null>(null);
-  const [heroPreviewUrl, setHeroPreviewUrl] = useState<string | undefined>(initialHeroImageUrl);
+  const [heroPreviewUrl, setHeroPreviewUrl] = useState<string | undefined>(
+    initialHeroImageUrl,
+  );
   const [loading, setLoading] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
 
@@ -59,7 +61,7 @@ export function SiteSettingsForm({
       const { file: resizedHeroFile } = await resizeImageFile(
         heroFile,
         HERO_RESIZE_MAX_WIDTH,
-        HERO_RESIZE_QUALITY
+        HERO_RESIZE_QUALITY,
       );
 
       const formData = new FormData();
@@ -103,8 +105,7 @@ export function SiteSettingsForm({
       <div>
         <p className="font-semibold text-neutral-700">메인 이미지</p>
         <p className="mt-2 text-xs leading-relaxed text-rose-600">
-          가로{" "}
-          <b>2560px(QHD) 이상</b>의 사진을 등록해주세요.
+          가로 <b>2560px(QHD) 이상</b>의 사진을 등록해주세요.
         </p>
 
         {heroPreviewUrl && (
@@ -147,7 +148,17 @@ export function SiteSettingsForm({
       {/* 텍스트 설정 */}
       {SITE_SETTING_FIELDS.map((field) => (
         <label key={field.key} className="font-semibold text-neutral-700">
-          {field.label}
+          {field.label.split(/(\(.*?\))/).map((part, idx) => {
+            const match = part.match(/^\((.*?)\)$/);
+            if (match) {
+              return (
+                <span key={idx} className="text-xs text-blue-500">
+                  * {match[1]}
+                </span>
+              );
+            }
+            return <span key={idx}>{part}</span>;
+          })}
           {field.type === "textarea" ? (
             <textarea
               value={values[field.key] ?? ""}
