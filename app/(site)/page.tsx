@@ -21,7 +21,7 @@ export default async function IntroPage() {
 
   return (
     <>
-      <section className="relative h-[calc(100dvh-3rem)] md:h-screen w-full overflow-hidden">
+      <section className="relative h-[calc(100svh-3rem)] md:h-screen w-full overflow-hidden">
         <Image
           src={heroImageUrl}
           alt="비욘드스냅 대표 컷"
