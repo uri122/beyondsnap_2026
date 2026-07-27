@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -6,6 +7,11 @@ import {
 } from "@/lib/data/galleries";
 import { CEREMONY_CATEGORIES, isCeremonyCategory } from "@/lib/categories";
 import type { CeremonyCategory } from "@/types/database";
+
+export const metadata: Metadata = {
+  title: "CEREMONY | 비욘드스냅",
+  description: "비욘드스냅이 촬영한 본식스냅을 만나보세요.",
+};
 
 export default async function CeremonyPage({
   searchParams,
