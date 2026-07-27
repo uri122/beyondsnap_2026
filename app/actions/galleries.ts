@@ -2,7 +2,9 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
-import type { CeremonyCategory, SnapType } from "@/types/database";
+import type { CeremonyCategory, SnapType, Database } from "@/types/database";
+
+type GalleryUpdate = Database["public"]["Tables"]["galleries"]["Update"];
 
 function slugify(text: string) {
   return text
@@ -117,7 +119,7 @@ export async function updateGallery(
   }
 
   const supabase = createAdminClient();
-  const updatePayload: Record<string, unknown> = {
+  const updatePayload: GalleryUpdate = {
     venue: input.venue.trim(),
     title: input.title.trim() || input.venue.trim(),
     published: input.published,
