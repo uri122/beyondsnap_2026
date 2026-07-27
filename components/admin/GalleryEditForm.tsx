@@ -11,13 +11,18 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
   const [venue, setVenue] = useState(gallery.venue);
   const [title, setTitle] = useState(gallery.title);
   const [venueType, setVenueType] = useState<CeremonyCategory>(
-    gallery.venue_type,
+    gallery.venue_type ?? CEREMONY_CATEGORIES[0].slug,
   );
   const [published, setPublished] = useState(gallery.published);
 
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isDslr = gallery.snap_type === "dslr";
+  const listPath = isDslr ? "/admin/galleries" : "/admin/iphonesnap";
+  const venueLabel = "장소 영문명";
+  const deleteConfirmMessage = `"${gallery.title}" 글을 정말 삭제할까요? 사진까지 전부 지워지고 되돌릴 수 없어요.`;
 
   async function handleSave() {
     setError(null);
@@ -26,7 +31,7 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
     const result = await updateGallery(gallery.id, {
       venue,
       title,
-      venueType,
+      venueType: isDslr ? venueType : undefined,
       published,
     });
 
@@ -35,18 +40,13 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
       setError(result.error);
       return;
     }
-    router.push("/admin/galleries");
+    router.push(listPath);
     router.refresh();
   }
 
   async function handleDelete() {
-    if (
-      !confirm(
-        `"${gallery.venue}" 갤러리를 정말 삭제할까요? 사진까지 전부 지워지고 되돌릴 수 없어요.`,
-      )
-    ) {
-      return;
-    }
+    if (!confirm(deleteConfirmMessage)) return;
+
     setDeleting(true);
     const result = await deleteGallery(gallery.id);
     setDeleting(false);
@@ -55,7 +55,7 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
       alert(result.error ?? "삭제에 실패했어요.");
       return;
     }
-    router.push("/admin/galleries");
+    router.push(listPath);
     router.refresh();
   }
 
@@ -63,7 +63,6 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
     <section className="rounded-lg border border-border p-6">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-lg">기본 정보</h2>
-        {/* 공개 / 비공개 토글 */}
         <button
           type="button"
           role="switch"
@@ -81,7 +80,6 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
           >
             {published ? "공개" : "비공개"}
           </span>
-
           <span
             className={`absolute left-1 h-6 w-6 rounded-full bg-white shadow transition-transform duration-200 ${
               published ? "translate-x-12" : "translate-x-0"
@@ -92,7 +90,9 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-muted-foreground">예식장명 *</label>
+          <label className="mb-1 block text-muted-foreground">
+            {venueLabel} *
+          </label>
           <input
             value={venue}
             onChange={(e) => setVenue(e.target.value)}
@@ -109,21 +109,25 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
             disabled={saving || deleting}
           />
         </div>
-        <div>
-          <label className="mb-1 block text-muted-foreground">카테고리</label>
-          <select
-            value={venueType}
-            onChange={(e) => setVenueType(e.target.value as CeremonyCategory)}
-            className="w-full rounded-md border border-border px-3 py-2"
-            disabled={saving || deleting}
-          >
-            {CEREMONY_CATEGORIES.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.label}
-              </option>
-            ))}
-          </select>
-        </div>
+
+        {/* 카테고리는 DSLR(예식) 갤러리에서만 노출 */}
+        {isDslr && (
+          <div>
+            <label className="mb-1 block text-muted-foreground">카테고리</label>
+            <select
+              value={venueType}
+              onChange={(e) => setVenueType(e.target.value as CeremonyCategory)}
+              className="w-full rounded-md border border-border px-3 py-2"
+              disabled={saving || deleting}
+            >
+              {CEREMONY_CATEGORIES.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
@@ -149,7 +153,7 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
           disabled={saving || deleting}
           className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
         >
-          {deleting ? "삭제 중..." : "갤러리 삭제"}
+          {deleting ? "삭제 중..." : "삭 제"}
         </button>
       </div>
     </section>

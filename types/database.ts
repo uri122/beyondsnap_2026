@@ -1,10 +1,13 @@
 export type CeremonyCategory = "bright" | "dark" | "outdoor" | "church";
 
+export type SnapType = "dslr" | "iphone";
+
 export type Gallery = {
   id: string;
   title: string;
   venue: string;
-  venue_type: CeremonyCategory;
+  venue_type: CeremonyCategory | null;
+  snap_type: SnapType;
   wedding_date: string | null;
   slug: string;
   cover_image_url: string | null;
@@ -69,24 +72,13 @@ export interface Database {
   public: {
     Tables: {
       galleries: {
-        Row: {
-          id: string;
-          title: string;
-          venue: string;
-          venue_type: CeremonyCategory;
-          wedding_date: string | null;
-          slug: string;
-          cover_image_url: string | null;
-          description: string | null;
-          published: boolean;
-          sort_order: number;
-          created_at: string;
-        };
+        Row: Gallery;
         Insert: {
           id?: string;
           title: string;
           venue: string;
-          venue_type: string;
+          venue_type?: string | null;
+          snap_type?: string;
           wedding_date?: string | null;
           slug: string;
           cover_image_url?: string | null;
@@ -99,7 +91,8 @@ export interface Database {
           id?: string;
           title?: string;
           venue?: string;
-          venue_type?: string;
+          venue_type?: string | null;
+          snap_type?: string;
           wedding_date?: string | null;
           slug?: string;
           cover_image_url?: string | null;

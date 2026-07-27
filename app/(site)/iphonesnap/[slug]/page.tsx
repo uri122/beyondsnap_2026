@@ -5,11 +5,10 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import {
   getGalleryBySlug,
   getGalleryPhotos,
-  getAdjacentGalleries,
+  getAdjacentIphoneSnaps,
 } from "@/lib/data/galleries";
 import { GalleryScroll } from "@/components/gallery/GalleryScroll";
 import { ScrollToTopButton } from "@/components/common/ScrollToTopButton";
-import { getCeremonyCategoryLabel } from "@/lib/categories";
 
 export async function generateMetadata({
   params,
@@ -17,13 +16,12 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const gallery = await getGalleryBySlug(params.slug);
-  if (!gallery || gallery.snap_type !== "dslr" || !gallery.venue_type)
-    return {};
+  if (!gallery || gallery.snap_type !== "iphone") return {};
 
-  const title = `${gallery.venue} 본식스냅 | ${gallery.title} - 비욘드스냅`;
+  const title = `${gallery.venue} 아이폰스냅 | ${gallery.title} - 비욘드스냅`;
   const description =
     gallery.description ??
-    `${gallery.venue}에서 진행된 비욘드스냅 본식스냅 기록, ${gallery.title}`;
+    `${gallery.venue}에서 진행된 비욘드스냅 아이폰스냅 기록, ${gallery.title}`;
 
   return {
     title,
@@ -38,57 +36,46 @@ export async function generateMetadata({
   };
 }
 
-export default async function GalleryDetailPage({
+export default async function IphoneSnapDetailPage({
   params,
 }: {
   params: { slug: string };
 }) {
   const gallery = await getGalleryBySlug(params.slug);
-  if (!gallery || gallery.snap_type !== "dslr" || !gallery.venue_type)
-    notFound();
 
-  const venueType = gallery.venue_type; // 좁혀진 타입을 변수로 고정
+  if (!gallery || gallery.snap_type !== "iphone") notFound();
 
   const photos = await getGalleryPhotos(gallery.id);
-  const { prev, next } = await getAdjacentGalleries(
-    venueType,
-    gallery.sort_order,
-  );
+  const { prev, next } = await getAdjacentIphoneSnaps(gallery.sort_order);
 
-  const categoryLabel = getCeremonyCategoryLabel(venueType);
-  const listHref = `/ceremony?type=${venueType}`;
-
+  const listHref = "/iphonesnap";
   const listButtonClass =
     "min-w-20 shink-0 inline-flex justify-center items-center gap-1.5 rounded-sm border border-border px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted";
 
   return (
     <section className="mx-auto max-w-6xl px-3 py-24 text-center sm:px-6 sm:py-24 lg:py-24 2xl:py-28 4xl:py-36">
-      {/* 상단: 목록으로 */}
       <Link href={listHref} className={listButtonClass}>
         목록으로
       </Link>
 
-      <p className="mt-15 text-xs uppercase tracking-[0.2em] text-accent-rose">
-        {categoryLabel}
-      </p>
-
-      <h1 className="mt-8 font-serif uppercase text-2xl md:text-3xl 3xl:text-5xl">
-        {gallery.venue}
+      <h1 className="mt-10 font-serif uppercase text-2xl md:text-3xl 3xl:text-5xl">
+        {gallery.venue.split(",").map((line, idx) => (
+          <p key={idx}>{line}</p>
+        ))}
       </h1>
       <p className="mt-2 text-muted-foreground">{gallery.title}</p>
 
-      <GalleryScroll photos={photos} altText={`${gallery.venue} 본식스냅`} />
+      <GalleryScroll photos={photos} altText={`${gallery.venue} 아이폰스냅`} />
 
       {photos.length === 0 && (
         <p className="mt-16 text-muted-foreground">등록된 사진이 없습니다.</p>
       )}
 
-      {/* 하단: 이전/다음 (한 줄, 컴팩트) + 목록으로 */}
-      <div className="mt-20 border-t border-border pt-8 text-center ">
+      <div className="mt-20 border-t border-border pt-8 text-center">
         <div className="flex justify-between items-center items-stretch gap-2 text-xs sm:text-sm md:gap-6">
           {prev ? (
             <Link
-              href={`/ceremony/${prev.slug}`}
+              href={`/iphonesnap/${prev.slug}`}
               aria-label={`이전 갤러리: ${prev.venue} ${prev.title}`}
               className="min-w-40 flex-1 flex flex-col gap-0.5 rounded-md border border-border px-3 py-2 hover:bg-muted/50"
             >
@@ -112,7 +99,7 @@ export default async function GalleryDetailPage({
 
           {next ? (
             <Link
-              href={`/ceremony/${next.slug}`}
+              href={`/iphonesnap/${next.slug}`}
               aria-label={`다음 갤러리: ${next.venue} ${next.title}`}
               className="min-w-40 flex-1 flex flex-col items-end gap-1 rounded-md border border-border px-3 py-2 text-right hover:bg-muted/50"
             >

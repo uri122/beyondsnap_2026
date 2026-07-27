@@ -6,8 +6,8 @@ const ADMIN_NAV = [
   // { href: "/admin/dashboard", label: "대시보드" },
   { href: "/admin/core", label: "기본 설정" },
   { href: "/admin/galleries", label: "Ceremony 관리" },
+  { href: "/admin/iphonesnap", label: "iPhoneSnap 관리" },
   { href: "/admin/films", label: "Films 관리" },
-  // { href: "/admin/products", label: "Products 관리" },
   { href: "/admin/faq", label: "FAQ 관리" },
 ];
 

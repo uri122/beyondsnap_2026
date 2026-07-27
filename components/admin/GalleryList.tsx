@@ -113,7 +113,7 @@ export function GalleryList({
   if (galleries.length === 0) {
     return (
       <p className="py-8 text-sm text-muted-foreground">
-        아직 등록된 갤러리가 없어요.
+        아직 등록된 글이 없어요.
       </p>
     );
   }

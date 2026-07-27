@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   DndContext,
@@ -26,17 +26,21 @@ function SortablePhotoTile({
   photo,
   isCover,
   busy,
+  disabled,
   onSetCover,
   onDelete,
 }: {
   photo: GalleryPhoto;
   isCover: boolean;
   busy: boolean;
+  disabled: boolean;
   onSetCover: () => void;
   onDelete: () => void;
 }) {
   const { attributes, listeners, setNodeRef, style, isDragging } =
-    useSortableItem(photo.id);
+    useSortableItem(photo.id, {
+      disabled,
+    });
 
   return (
     <div
@@ -93,8 +97,25 @@ export function PhotoGrid({
   coverImageUrl: string | null;
 }) {
   const router = useRouter();
+  // savedPhotos: 서버에 실제 반영된(취소 시 되돌아갈) 순서
+  const [savedPhotos, setSavedPhotos] = useState(initialPhotos);
+  // photos: 화면에 보여지는(드래그로 아직 저장 전인) 순서
   const [photos, setPhotos] = useState(initialPhotos);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [savingOrder, setSavingOrder] = useState(false);
+
+  const isOrderDirty = photos.some((p, i) => p.id !== savedPhotos[i]?.id);
+
+  // 순서를 바꿔둔 채로 실수로 탭을 닫는 걸 막아줍니다.
+  useEffect(() => {
+    if (!isOrderDirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isOrderDirty]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -103,7 +124,8 @@ export function PhotoGrid({
     }),
   );
 
-  async function handleDragEnd(event: DragEndEvent) {
+  // 드래그가 끝나도 서버에 저장하지 않고, 화면 상태만 바꿉니다.
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -111,17 +133,26 @@ export function PhotoGrid({
     const newIndex = photos.findIndex((p) => p.id === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
 
-    const previous = photos;
-    const next = arrayMove(photos, oldIndex, newIndex);
-    setPhotos(next);
+    setPhotos((prev) => arrayMove(prev, oldIndex, newIndex));
+  }
 
+  async function handleSaveOrder() {
+    setSavingOrder(true);
     const result = await reorderPhotos(
-      next.map((p, i) => ({ id: p.id, sortOrder: i })),
+      photos.map((p, i) => ({ id: p.id, sortOrder: i })),
     );
+    setSavingOrder(false);
+
     if (!result.success) {
-      alert(result.error ?? "순서 변경에 실패했어요.");
-      setPhotos(previous);
+      alert(result.error ?? "순서 저장에 실패했어요.");
+      return;
     }
+    setSavedPhotos(photos);
+    router.refresh();
+  }
+
+  function handleCancelOrder() {
+    setPhotos(savedPhotos);
   }
 
   async function handleDelete(photo: GalleryPhoto) {
@@ -133,6 +164,7 @@ export function PhotoGrid({
       return;
     }
     setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
+    setSavedPhotos((prev) => prev.filter((p) => p.id !== photo.id));
     router.refresh();
   }
 
@@ -154,10 +186,34 @@ export function PhotoGrid({
 
   return (
     <>
-      <p className="mt-4 text-sm text-muted-foreground">
-        {photos.length}장 · 드래그해서 순서 변경, 사진에 마우스를 올려 대표
-        지정/삭제
-      </p>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-muted-foreground">
+          {photos.length}장 · 드래그해서 순서 변경, 사진에 마우스를 올려 대표
+          지정/삭제
+        </p>
+
+        {isOrderDirty && (
+          <div className="flex shrink-0 gap-2">
+            <button
+              type="button"
+              onClick={handleCancelOrder}
+              disabled={savingOrder}
+              className="rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-50"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              onClick={handleSaveOrder}
+              disabled={savingOrder}
+              className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground disabled:opacity-50"
+            >
+              {savingOrder ? "저장 중..." : "순서 저장"}
+            </button>
+          </div>
+        )}
+      </div>
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -174,6 +230,7 @@ export function PhotoGrid({
                 photo={photo}
                 isCover={coverImageUrl === photo.image_url}
                 busy={busyId === photo.id}
+                disabled={savingOrder}
                 onSetCover={() => handleSetCover(photo)}
                 onDelete={() => handleDelete(photo)}
               />

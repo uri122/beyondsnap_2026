@@ -11,6 +11,7 @@ export const mockGalleries: Gallery[] = [
     title: "봄날의 기록",
     venue: "그랜드 하얏트 서울",
     venue_type: "bright",
+    snap_type: "dslr",
     wedding_date: "2026-04-18",
     slug: "grand-hyatt-seoul-sample",
     cover_image_url:
@@ -25,6 +26,7 @@ export const mockGalleries: Gallery[] = [
     title: "가을의 온기",
     venue: "더채플앳청담",
     venue_type: "dark",
+    snap_type: "dslr",
     wedding_date: "2026-10-05",
     slug: "the-chapel-cheongdam-sample",
     cover_image_url:
@@ -33,34 +35,6 @@ export const mockGalleries: Gallery[] = [
     published: true,
     sort_order: 1,
     created_at: "2026-10-06T00:00:00Z",
-  },
-  {
-    id: "mock-gallery-3",
-    title: "빛과 서약",
-    venue: "메이필드호텔 야외정원",
-    venue_type: "outdoor",
-    wedding_date: "2026-06-12",
-    slug: "mayfield-hotel-sample",
-    cover_image_url:
-      "https://images.unsplash.com/photo-1544078751-58fee2d8a03b?q=80&w=1200",
-    description: "자연광이 가득한 야외 예식 기록",
-    published: true,
-    sort_order: 2,
-    created_at: "2026-06-13T00:00:00Z",
-  },
-  {
-    id: "mock-gallery-4",
-    title: "고요한 서약",
-    venue: "정동제일교회",
-    venue_type: "church",
-    wedding_date: "2026-05-09",
-    slug: "jeongdong-church-sample",
-    cover_image_url:
-      "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=1200",
-    description: "예배당 특유의 차분한 분위기를 담은 기록",
-    published: true,
-    sort_order: 3,
-    created_at: "2026-05-10T00:00:00Z",
   },
 ];
 
@@ -76,6 +50,8 @@ export const mockGalleryPhotos: GalleryPhoto[] = [
     image_url: `https://picsum.photos/seed/${galleryId}-${i}/900/1100`,
     thumbnail_url: `https://picsum.photos/seed/${galleryId}-${i}/400/490`,
     sort_order: i,
+    width: 600, // 추가
+    height: 900, // 추가
   })),
 );
 

@@ -12,7 +12,7 @@ import {
   uploadFileDirect,
   runWithConcurrency,
 } from "@/lib/client/upload";
-import type { CeremonyCategory } from "@/types/database";
+import type { CeremonyCategory, SnapType } from "@/types/database";
 import {
   DndContext,
   PointerSensor,
@@ -30,16 +30,16 @@ import {
 } from "@dnd-kit/sortable";
 import { useSortableItem } from "@/hooks/useSortableItem";
 
-const MAX_FILE_SIZE_MB = 30;
-const RESIZE_MAX_WIDTH = 1600; // 이 너비를 넘는 사진만 축소, 이하는 원본 유지
-const RESIZE_QUALITY = 0.82;
+const MAX_FILE_SIZE_MB = 2;
+const RESIZE_MAX_WIDTH = 1500;
+const RESIZE_QUALITY = 0.9;
 const UPLOAD_CONCURRENCY = 4;
 
 type QueuedPhoto = {
   id: string;
   file: File;
-  previewUrl: string; // 작게 생성한 미리보기용 썸네일 (원본 아님 — 화면 버벅임 방지)
-  progress: number; // 0-100
+  previewUrl: string;
+  progress: number;
   status: "pending" | "uploading" | "done" | "error";
 };
 
@@ -59,9 +59,7 @@ function SortableQueuedPhotoTile({
   onRemove: () => void;
 }) {
   const { attributes, listeners, setNodeRef, style, isDragging } =
-    useSortableItem(photo.id, {
-      disabled: submitting,
-    });
+    useSortableItem(photo.id, { disabled: submitting });
 
   return (
     <div
@@ -125,7 +123,8 @@ function SortableQueuedPhotoTile({
   );
 }
 
-export function GalleryComposer() {
+// snapType: 'dslr'(예식) | 'iphone'(아이폰스냅). dslr일 때만 카테고리 select를 보여줍니다.
+export function GalleryComposer({ snapType }: { snapType: SnapType }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -144,11 +143,13 @@ export function GalleryComposer() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const listPath =
+    snapType === "dslr" ? "/admin/galleries" : "/admin/iphonesnap";
+
   const totalSizeMb =
     photos.reduce((sum, p) => sum + p.file.size, 0) / (1024 * 1024);
   const doneCount = photos.filter((p) => p.status === "done").length;
 
-  // 사진을 선택해둔 채로 실수로 탭을 닫거나 새로고침하는 걸 막아줍니다.
   useEffect(() => {
     if (photos.length === 0 || submitting) return;
     const handler = (e: BeforeUnloadEvent) => {
@@ -174,8 +175,6 @@ export function GalleryComposer() {
     if (validFiles.length === 0) return;
 
     setIsPreparingFiles(true);
-    // 고해상도 원본을 그대로 <img>에 물리면 수십 장일 때 브라우저가 버벅여서,
-    // 미리보기용 작은 썸네일을 먼저 만들어둡니다 (업로드용 리사이즈와는 별개).
     const accepted: QueuedPhoto[] = await Promise.all(
       validFiles.map(async (file) => ({
         id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`,
@@ -291,13 +290,11 @@ export function GalleryComposer() {
       return;
     }
     if (!venue.trim()) {
-      setError("예식장명은 필수예요.");
+      setError("장소 영문명은 필수예요.");
       return;
     }
     if (mode === "publish_ready" && !title.trim()) {
-      setError(
-        "등록하려면 제목도 입력해주세요. (임시저장은 예식장명만으로도 가능해요)",
-      );
+      setError("등록하려면 제목도 입력해주세요.");
       return;
     }
     if (mode === "publish_ready" && photos.length === 0) {
@@ -312,7 +309,8 @@ export function GalleryComposer() {
     const result = await createGallery({
       venue,
       title,
-      venueType,
+      snapType,
+      venueType: snapType === "dslr" ? venueType : undefined,
       published: mode === "publish_ready",
     });
     if (!result.success) {
@@ -347,66 +345,70 @@ export function GalleryComposer() {
       );
     }
 
-    router.push(`/admin/galleries/${galleryId}`);
+    router.push(`${listPath}`);
     router.refresh();
   }
 
   return (
     <div className="space-y-8">
-      {/* 기본 정보 */}
       <section className="rounded-lg border border-border p-6">
         <h2 className="font-medium">기본 정보</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div>
             <label className="mb-1 block text-sm text-muted-foreground">
-              예식장명 *
+              장소 영문명 *
             </label>
             <input
               value={venue}
               onChange={(e) => setVenue(e.target.value)}
-              placeholder="예: 그랜드 하얏트 서울"
+              placeholder="예: The Link Seoul, a Tribute Portfolio Hotel"
               className="w-full rounded-md border border-border px-3 py-2"
               disabled={submitting}
             />
           </div>
           <div>
             <label className="mb-1 block text-sm text-muted-foreground">
-              제목
+              제목 *
             </label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="예: 봄날의 기록"
+              placeholder="예: 더 링크 서울, 베일리홀"
               className="w-full rounded-md border border-border px-3 py-2"
               disabled={submitting}
             />
           </div>
-          <div>
-            <label className="mb-1 block text-sm text-muted-foreground">
-              카테고리
-            </label>
-            <select
-              value={venueType}
-              onChange={(e) => setVenueType(e.target.value as CeremonyCategory)}
-              className="w-full rounded-md border border-border px-3 py-2"
-              disabled={submitting}
-            >
-              {CEREMONY_CATEGORIES.map((c) => (
-                <option key={c.slug} value={c.slug}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </div>
+
+          {/* 카테고리는 DSLR(예식) 갤러리에서만 필요 */}
+          {snapType === "dslr" && (
+            <div>
+              <label className="mb-1 block text-sm text-muted-foreground">
+                카테고리
+              </label>
+              <select
+                value={venueType}
+                onChange={(e) =>
+                  setVenueType(e.target.value as CeremonyCategory)
+                }
+                className="w-full rounded-md border border-border px-3 py-2"
+                disabled={submitting}
+              >
+                {CEREMONY_CATEGORIES.map((c) => (
+                  <option key={c.slug} value={c.slug}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* 사진 업로드 */}
       <section className="rounded-lg border border-border p-6">
         <h2 className="font-medium">사진</h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          권장 규격: 가로 {RESIZE_MAX_WIDTH}px 이하 · JPG 또는 PNG · 장당{" "}
+          권장 규격: 장변 {RESIZE_MAX_WIDTH}px 추천 · JPG 또는 PNG · 장당{" "}
           {MAX_FILE_SIZE_MB}MB 이하. 트래픽/용량 절약을 위해 가로{" "}
           {RESIZE_MAX_WIDTH}px가 넘는 사진은 업로드 시 자동으로{" "}
           {RESIZE_MAX_WIDTH}px로 축소돼요 (이하인 사진은 원본 그대로 유지).
@@ -432,7 +434,7 @@ export function GalleryComposer() {
             사진을 여기로 드래그하거나 클릭해서 선택하세요
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            여러 장 한 번에 선택 가능 (50장 정도도 OK)
+            여러 장 한 번에 선택 가능
           </p>
           <input
             ref={fileInputRef}
@@ -487,7 +489,7 @@ export function GalleryComposer() {
                   ))}
                 </div>
               </SortableContext>
-            </DndContext>{" "}
+            </DndContext>
           </>
         )}
       </section>
