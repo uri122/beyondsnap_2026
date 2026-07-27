@@ -1,14 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
-import { mockSiteSettings } from "@/lib/mock-data";
 
 export async function getSiteSettings(
   keys: string[],
 ): Promise<Record<string, string>> {
   if (!isSupabaseConfigured) {
-    return Object.fromEntries(
-      keys.map((key) => [key, mockSiteSettings[key] ?? ""]),
-    );
+    return Object.fromEntries(keys.map((key) => [key, ""]));
   }
 
   const supabase = createClient();
