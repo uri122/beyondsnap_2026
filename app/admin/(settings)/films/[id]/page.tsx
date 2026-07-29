@@ -6,9 +6,10 @@ import { EditFilmForm } from "@/components/admin/EditFilmForm";
 export default async function AdminFilmDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const film = await getFilmById(params.id);
+  const { id } = await params;
+  const film = await getFilmById(id);
   if (!film) notFound();
 
   return (

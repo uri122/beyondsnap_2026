@@ -3,8 +3,8 @@ import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
 
 // 서버 컴포넌트 / route handler에서 사용
-export function createClient() {
-  const cookieStore = cookies();
+export async function createClient() {
+  const cookieStore = await cookies();
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -29,6 +29,6 @@ export function createClient() {
           }
         },
       },
-    }
+    },
   );
 }

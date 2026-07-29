@@ -5,7 +5,7 @@ import type { Film } from "@/types/database";
 
 export async function getPublishedFilms(): Promise<Film[]> {
   if (!isSupabaseConfigured) return [];
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("films")
     .select("*")
@@ -38,7 +38,7 @@ export async function getFilmById(id: string): Promise<Film | null> {
 export async function getFilmBySlug(slug: string): Promise<Film | null> {
   if (!isSupabaseConfigured) return null;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("films")
     .select("*")

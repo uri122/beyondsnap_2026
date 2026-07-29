@@ -16,9 +16,10 @@ export const metadata: Metadata = {
 export default async function CeremonyPage({
   searchParams,
 }: {
-  searchParams: { type?: string };
+  searchParams: Promise<{ type?: string }>;
 }) {
-  const rawType = searchParams.type ?? "";
+  const params = await searchParams;
+  const rawType = params.type ?? "";
   const activeCategory: CeremonyCategory | null = isCeremonyCategory(rawType)
     ? (rawType as CeremonyCategory)
     : null;
@@ -82,7 +83,8 @@ export default async function CeremonyPage({
                     src={gallery.cover_image_url}
                     alt={`${gallery.venue} 본식스냅 - ${gallery.title}`}
                     fill
-                    quality={90}
+                    quality={100}
+                    loading="eager"
                     sizes="(max-width: 768px) 70vw, (max-width: 1280px) 45vw, (max-width: 1920px) 35vw, 30vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />

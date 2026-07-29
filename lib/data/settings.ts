@@ -8,7 +8,7 @@ export async function getSiteSettings(
     return Object.fromEntries(keys.map((key) => [key, ""]));
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("site_settings")
     .select("key, value")

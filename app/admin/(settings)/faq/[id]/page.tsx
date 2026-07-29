@@ -2,8 +2,13 @@ import { notFound } from "next/navigation";
 import { getFaqById } from "@/lib/data/faqs";
 import { EditFaqForm } from "@/components/admin/EditFaqForm";
 
-export default async function AdminFaqDetailPage({ params }: { params: { id: string } }) {
-  const faq = await getFaqById(params.id);
+export default async function AdminFaqDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const faq = await getFaqById(id);
   if (!faq) notFound();
 
   return (

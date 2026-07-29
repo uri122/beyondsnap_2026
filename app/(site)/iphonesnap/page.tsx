@@ -30,7 +30,7 @@ export default async function IphoneSnapPage() {
                   src={gallery.cover_image_url}
                   alt={`${gallery.venue} 아이폰스냅 - ${gallery.title}`}
                   fill
-                  quality={90}
+                  quality={100}
                   sizes="(max-width: 768px) 70vw, (max-width: 1280px) 45vw, (max-width: 1920px) 35vw, 30vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />

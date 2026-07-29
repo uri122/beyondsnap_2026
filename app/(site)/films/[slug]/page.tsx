@@ -7,9 +7,10 @@ import { getVideoEmbedUrl } from "@/lib/video";
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const film = await getFilmBySlug(params.slug);
+  const { slug } = await params;
+  const film = await getFilmBySlug(slug);
   if (!film) return {};
 
   const title = `${film.venue} 웨딩 영상 | ${film.title} - 비욘드스냅`;
@@ -29,9 +30,10 @@ export async function generateMetadata({
 export default async function FilmDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const film = await getFilmBySlug(params.slug);
+  const { slug } = await params;
+  const film = await getFilmBySlug(slug);
   if (!film) notFound();
 
   const embedUrl = getVideoEmbedUrl(film.video_url);

@@ -30,14 +30,19 @@ export async function loginAdmin(formData: FormData) {
     };
   }
 
-  const isValid = timingSafeEqual(id, adminId) && timingSafeEqual(password, adminPassword);
+  const isValid =
+    timingSafeEqual(id, adminId) && timingSafeEqual(password, adminPassword);
 
   if (!isValid) {
-    return { success: false, error: "아이디 또는 비밀번호가 올바르지 않습니다." };
+    return {
+      success: false,
+      error: "아이디 또는 비밀번호가 올바르지 않습니다.",
+    };
   }
 
   const token = await createSessionToken();
-  cookies().set(ADMIN_SESSION_COOKIE, token, {
+  const cookieStore = await cookies();
+  cookieStore.set(ADMIN_SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -49,5 +54,6 @@ export async function loginAdmin(formData: FormData) {
 }
 
 export async function logoutAdmin() {
-  cookies().delete(ADMIN_SESSION_COOKIE);
+  const cookieStore = await cookies();
+  cookieStore.delete(ADMIN_SESSION_COOKIE);
 }

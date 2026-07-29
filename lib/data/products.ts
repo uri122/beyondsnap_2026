@@ -7,7 +7,7 @@ export async function getProducts(): Promise<ProductPackage[]> {
     return [];
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("products")
     .select("*")

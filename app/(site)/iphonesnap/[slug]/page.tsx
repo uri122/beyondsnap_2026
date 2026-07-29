@@ -13,9 +13,10 @@ import { ScrollToTopButton } from "@/components/common/ScrollToTopButton";
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const gallery = await getGalleryBySlug(params.slug);
+  const { slug } = await params;
+  const gallery = await getGalleryBySlug(slug);
   if (!gallery || gallery.snap_type !== "iphone") return {};
 
   const title = `${gallery.venue} 아이폰스냅 | ${gallery.title} - 비욘드스냅`;
@@ -39,7 +40,7 @@ export async function generateMetadata({
 export default async function IphoneSnapDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
   const gallery = await getGalleryBySlug(params.slug);
 

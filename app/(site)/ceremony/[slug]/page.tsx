@@ -14,9 +14,10 @@ import { getCeremonyCategoryLabel } from "@/lib/categories";
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const gallery = await getGalleryBySlug(params.slug);
+  const { slug } = await params;
+  const gallery = await getGalleryBySlug(slug);
   if (!gallery || gallery.snap_type !== "dslr" || !gallery.venue_type)
     return {};
 
@@ -41,9 +42,10 @@ export async function generateMetadata({
 export default async function GalleryDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const gallery = await getGalleryBySlug(params.slug);
+  const { slug } = await params;
+  const gallery = await getGalleryBySlug(slug);
   if (!gallery || gallery.snap_type !== "dslr" || !gallery.venue_type)
     notFound();
 

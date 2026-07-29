@@ -8,7 +8,7 @@ export async function getPublishedGalleries(
 ): Promise<Gallery[]> {
   if (!isSupabaseConfigured) return [];
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("galleries")
     .select("*")
@@ -40,7 +40,7 @@ export async function getGalleriesByCategory(
 ): Promise<Gallery[]> {
   if (!isSupabaseConfigured) return [];
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("galleries")
     .select("*")
@@ -57,7 +57,7 @@ export async function getLatestGalleryByCategory(
 ): Promise<Gallery | null> {
   if (!isSupabaseConfigured) return null;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("galleries")
     .select("*")
@@ -75,7 +75,7 @@ export async function getLatestGalleryByCategory(
 export async function getGalleryBySlug(slug: string): Promise<Gallery | null> {
   if (!isSupabaseConfigured) return null;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("galleries")
     .select("*")
@@ -118,7 +118,7 @@ export async function getAdjacentGalleries(
 ): Promise<{ prev: Gallery | null; next: Gallery | null }> {
   if (!isSupabaseConfigured) return { prev: null, next: null };
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [{ data: prevData }, { data: nextData }] = await Promise.all([
     supabase
@@ -152,7 +152,7 @@ export async function getAdjacentIphoneSnaps(
 ): Promise<{ prev: Gallery | null; next: Gallery | null }> {
   if (!isSupabaseConfigured) return { prev: null, next: null };
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [{ data: prevData }, { data: nextData }] = await Promise.all([
     supabase

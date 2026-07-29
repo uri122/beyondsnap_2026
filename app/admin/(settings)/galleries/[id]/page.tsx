@@ -10,9 +10,10 @@ export const dynamic = "force-dynamic"; // 관리자 페이지는 항상 최신 
 export default async function AdminGalleryDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const gallery = await getGalleryById(params.id);
+  const { id } = await params;
+  const gallery = await getGalleryById(id);
   if (!gallery) notFound();
 
   const photos = await getGalleryPhotos(gallery.id);

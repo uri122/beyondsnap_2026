@@ -7,7 +7,7 @@ export async function getFaqs(): Promise<Faq[]> {
     return [];
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("faqs")
     .select("*")
@@ -20,7 +20,7 @@ export async function getFaqById(id: string): Promise<Faq | null> {
     return null;
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("faqs")
     .select("*")

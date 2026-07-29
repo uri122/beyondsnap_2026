@@ -52,7 +52,7 @@ export function GalleryPhotoImage({
           priority={priority}
           loading={priority ? undefined : loading}
           sizes={IMAGE_SIZES}
-          quality={90}
+          quality={100}
           className={`object-contain transition-opacity duration-500 ease-out ${opacityClass}`}
           onLoad={() => setLoaded(true)}
         />
