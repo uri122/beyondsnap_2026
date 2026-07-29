@@ -5,6 +5,8 @@
 
 create extension if not exists "uuid-ossp";
 
+create type ceremony_category as enum ('bright', 'dark', 'outdoor', 'church');
+
 -- 갤러리 (세레모니)
 create table galleries (
   id uuid primary key default uuid_generate_v4(),
@@ -20,6 +22,11 @@ create table galleries (
   sort_order int not null default 0,
   created_at timestamptz not null default now()
 );
+
+drop index if exists galleries_snap_type_idx;
+
+create index idx_galleries_snap_type_venue_type_sort
+on galleries (snap_type, venue_type, sort_order desc);
 
 create table gallery_photos (
   id uuid primary key default uuid_generate_v4(),
