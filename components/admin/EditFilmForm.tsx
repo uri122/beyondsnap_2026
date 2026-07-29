@@ -107,19 +107,46 @@ export function EditFilmForm({ film }: { film: Film }) {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <label className="mb-1 block text-sm text-muted-foreground">
-          예식장명 *
-        </label>
-        <input
-          value={venue}
-          onChange={(e) => setVenue(e.target.value)}
-          placeholder="예: 그랜드 하얏트 서울"
-          className="w-full rounded-md border border-border px-3 py-2"
+    <section className="rounded-lg border border-border p-6 space-y-6">
+      <div className="flex items-center justify-between gap-20">
+        <div className="flex-1">
+          <label className="mb-1 block text-sm text-muted-foreground">
+            장소 영문명 *
+          </label>
+          <input
+            value={venue}
+            onChange={(e) => setVenue(e.target.value)}
+            placeholder="예: The Link Seoul, a Tribute Portfolio Hotel"
+            className="w-full rounded-md border border-border px-3 py-2"
+            disabled={saving || deleting}
+          />
+        </div>
+
+        <button
+          type="button"
+          role="switch"
+          aria-checked={published}
+          onClick={() => setPublished((v) => !v)}
           disabled={saving || deleting}
-        />
+          className={`relative inline-flex h-8 w-20 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+            published ? "bg-green-500" : "bg-gray-400"
+          }`}
+        >
+          <span
+            className={`z-10 w-full select-none text-sm font-semibold text-white ${
+              published ? "text-left pl-2.5" : "text-right pr-2.5"
+            }`}
+          >
+            {published ? "공개" : "비공개"}
+          </span>
+          <span
+            className={`absolute left-1 h-6 w-6 rounded-full bg-white shadow transition-transform duration-200 ${
+              published ? "translate-x-12" : "translate-x-0"
+            }`}
+          />
+        </button>
       </div>
+
       <div>
         <label className="mb-1 block text-sm text-muted-foreground">
           제목 *
@@ -127,6 +154,7 @@ export function EditFilmForm({ film }: { film: Film }) {
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          placeholder="예: 더 링크 서울, 베일리홀"
           className="w-full rounded-md border border-border px-3 py-2"
           disabled={saving || deleting}
         />
@@ -182,16 +210,6 @@ export function EditFilmForm({ film }: { film: Film }) {
         )}
       </div>
 
-      <label className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={published}
-          onChange={(e) => setPublished(e.target.checked)}
-          disabled={saving || deleting}
-        />
-        공개
-      </label>
-
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <div className="flex items-center justify-between border-t border-border pt-5">
@@ -201,7 +219,7 @@ export function EditFilmForm({ film }: { film: Film }) {
           disabled={saving || deleting}
           className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
-          {saving ? "저장 중..." : "저장"}
+          {saving ? "저장 중..." : "저 장"}
         </button>
 
         <button
@@ -210,9 +228,9 @@ export function EditFilmForm({ film }: { film: Film }) {
           disabled={saving || deleting}
           className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
         >
-          {deleting ? "삭제 중..." : "영상 삭제"}
+          {deleting ? "삭제 중..." : "삭 제"}
         </button>
       </div>
-    </div>
+    </section>
   );
 }

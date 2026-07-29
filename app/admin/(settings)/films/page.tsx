@@ -15,7 +15,7 @@ export default async function AdminFilmsPage() {
           href="/admin/films/new"
           className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground"
         >
-          새 영상 등록
+          새 글 등록
         </Link>
       </div>
 

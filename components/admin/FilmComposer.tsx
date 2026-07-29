@@ -47,7 +47,7 @@ export function FilmComposer() {
       return;
     }
     if (!venue.trim()) {
-      setError("예식장명은 필수예요.");
+      setError("장소명은 필수예요.");
       return;
     }
     if (!title.trim()) {
@@ -115,12 +115,12 @@ export function FilmComposer() {
     >
       <div>
         <label className="mb-1 block text-sm text-muted-foreground">
-          예식장명 *
+          장소 영문명 *
         </label>
         <input
           value={venue}
           onChange={(e) => setVenue(e.target.value)}
-          placeholder="예: 그랜드 하얏트 서울"
+          placeholder="예: The Link Seoul, a Tribute Portfolio Hotel"
           className="w-full rounded-md border border-border px-3 py-2"
           disabled={submitting}
         />
@@ -132,7 +132,7 @@ export function FilmComposer() {
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="예: 그랜드 하얏트 서울 - 지훈 & 서연"
+          placeholder="예: 더 링크 서울, 베일리홀"
           className="w-full rounded-md border border-border px-3 py-2"
           disabled={submitting}
         />
