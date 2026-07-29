@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Info } from "lucide-react";
 import {
   DndContext,
   PointerSensor,
@@ -22,6 +23,8 @@ import { setCoverImage } from "@/app/actions/galleries";
 import { useSortableItem } from "@/hooks/useSortableItem";
 import type { GalleryPhoto } from "@/types/database";
 
+type SaveStatus = "idle" | "saving" | "saved" | "error";
+
 function SortablePhotoTile({
   photo,
   isCover,
@@ -38,9 +41,7 @@ function SortablePhotoTile({
   onDelete: () => void;
 }) {
   const { attributes, listeners, setNodeRef, style, isDragging } =
-    useSortableItem(photo.id, {
-      disabled,
-    });
+    useSortableItem(photo.id, { disabled });
 
   return (
     <div
@@ -60,7 +61,7 @@ function SortablePhotoTile({
       />
       {isCover && (
         <span className="absolute bottom-1 left-1 rounded bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
-          대표
+          썸네일
         </span>
       )}
       {!isCover && (
@@ -71,7 +72,7 @@ function SortablePhotoTile({
           disabled={busy}
           className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 disabled:opacity-50"
         >
-          대표로 설정
+          썸네일로 설정
         </button>
       )}
       <button
@@ -97,25 +98,15 @@ export function PhotoGrid({
   coverImageUrl: string | null;
 }) {
   const router = useRouter();
-  // savedPhotos: 서버에 실제 반영된(취소 시 되돌아갈) 순서
-  const [savedPhotos, setSavedPhotos] = useState(initialPhotos);
-  // photos: 화면에 보여지는(드래그로 아직 저장 전인) 순서
   const [photos, setPhotos] = useState(initialPhotos);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [savingOrder, setSavingOrder] = useState(false);
 
-  const isOrderDirty = photos.some((p, i) => p.id !== savedPhotos[i]?.id);
-
-  // 순서를 바꿔둔 채로 실수로 탭을 닫는 걸 막아줍니다.
+  // 사진이 추가/변경된 경우도 반영되도록 동기화
   useEffect(() => {
-    if (!isOrderDirty) return;
-    const handler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = "";
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [isOrderDirty]);
+    setPhotos(initialPhotos);
+  }, [initialPhotos]);
+
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -124,8 +115,7 @@ export function PhotoGrid({
     }),
   );
 
-  // 드래그가 끝나도 서버에 저장하지 않고, 화면 상태만 바꿉니다.
-  function handleDragEnd(event: DragEndEvent) {
+  async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -133,26 +123,24 @@ export function PhotoGrid({
     const newIndex = photos.findIndex((p) => p.id === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
 
-    setPhotos((prev) => arrayMove(prev, oldIndex, newIndex));
-  }
+    const previous = photos;
+    const next = arrayMove(photos, oldIndex, newIndex);
+    setPhotos(next);
+    setSaveStatus("saving");
 
-  async function handleSaveOrder() {
-    setSavingOrder(true);
     const result = await reorderPhotos(
-      photos.map((p, i) => ({ id: p.id, sortOrder: i })),
+      next.map((p, i) => ({ id: p.id, sortOrder: i })),
     );
-    setSavingOrder(false);
 
     if (!result.success) {
       alert(result.error ?? "순서 저장에 실패했어요.");
+      setPhotos(previous);
+      setSaveStatus("error");
       return;
     }
-    setSavedPhotos(photos);
-    router.refresh();
-  }
 
-  function handleCancelOrder() {
-    setPhotos(savedPhotos);
+    setSaveStatus("saved");
+    setTimeout(() => setSaveStatus("idle"), 1500);
   }
 
   async function handleDelete(photo: GalleryPhoto) {
@@ -164,7 +152,6 @@ export function PhotoGrid({
       return;
     }
     setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
-    setSavedPhotos((prev) => prev.filter((p) => p.id !== photo.id));
     router.refresh();
   }
 
@@ -172,7 +159,8 @@ export function PhotoGrid({
     setBusyId(photo.id);
     const result = await setCoverImage(galleryId, photo.image_url);
     setBusyId(null);
-    if (!result.success) alert(result.error ?? "대표 사진 설정에 실패했어요.");
+    if (!result.success)
+      alert(result.error ?? "썸네일 사진 설정에 실패했어요.");
     else router.refresh();
   }
 
@@ -184,34 +172,31 @@ export function PhotoGrid({
     );
   }
 
+  const isSaving = saveStatus === "saving";
+
   return (
     <>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">
-          {photos.length}장 · 드래그해서 순서 변경, 사진에 마우스를 올려 대표
-          지정/삭제
-        </p>
+      <div className="mt-4 flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-base font-bold text-foreground">
+            총 {photos.length}장
+          </p>
+          <span
+            role="status"
+            aria-live="polite"
+            className="text-xs text-muted-foreground"
+          >
+            {saveStatus === "saving" && "순서 저장 중..."}
+            {saveStatus === "saved" && "✓ 순서가 저장됐어요"}
+          </span>
+        </div>
 
-        {isOrderDirty && (
-          <div className="flex shrink-0 gap-2">
-            <button
-              type="button"
-              onClick={handleCancelOrder}
-              disabled={savingOrder}
-              className="rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-50"
-            >
-              취소
-            </button>
-            <button
-              type="button"
-              onClick={handleSaveOrder}
-              disabled={savingOrder}
-              className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground disabled:opacity-50"
-            >
-              {savingOrder ? "저장 중..." : "순서 저장"}
-            </button>
-          </div>
-        )}
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 rounded-md bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <Info size={13} aria-hidden="true" />
+            이미지 추가 · 삭제 · 순서 변경 · 썸네일 변경시 즉시 반영됨
+          </span>
+        </div>
       </div>
 
       <DndContext
@@ -230,7 +215,7 @@ export function PhotoGrid({
                 photo={photo}
                 isCover={coverImageUrl === photo.image_url}
                 busy={busyId === photo.id}
-                disabled={savingOrder}
+                disabled={isSaving}
                 onSetCover={() => handleSetCover(photo)}
                 onDelete={() => handleDelete(photo)}
               />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isSupabaseConfigured } from "@/lib/env";
 import { CEREMONY_CATEGORIES } from "@/lib/categories";
@@ -29,11 +29,14 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { useSortableItem } from "@/hooks/useSortableItem";
-
-const MAX_FILE_SIZE_MB = 2;
-const RESIZE_MAX_WIDTH = 1500;
-const RESIZE_QUALITY = 0.9;
-const UPLOAD_CONCURRENCY = 4;
+import { PhotoDropzone } from "@/components/admin/PhotoDropzone";
+import {
+  GALLERY_PHOTO_MAX_WIDTH as RESIZE_MAX_WIDTH,
+  GALLERY_PHOTO_QUALITY as RESIZE_QUALITY,
+  GALLERY_PHOTO_MAX_FILE_SIZE_MB as MAX_FILE_SIZE_MB,
+  GALLERY_PHOTO_UPLOAD_CONCURRENCY as UPLOAD_CONCURRENCY,
+  GALLERY_PHOTO_UPLOAD_HINT,
+} from "@/lib/upload-config";
 
 type QueuedPhoto = {
   id: string;
@@ -84,7 +87,7 @@ function SortableQueuedPhotoTile({
 
       {isCover && (
         <span className="absolute bottom-1 left-1 rounded bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
-          대표
+          썸네일
         </span>
       )}
 
@@ -97,7 +100,7 @@ function SortableQueuedPhotoTile({
               onClick={onSetCover}
               className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
             >
-              대표로 설정
+              썸네일로 설정
             </button>
           )}
           <button
@@ -126,7 +129,6 @@ function SortableQueuedPhotoTile({
 // snapType: 'dslr'(예식) | 'iphone'(아이폰스냅). dslr일 때만 카테고리 select를 보여줍니다.
 export function GalleryComposer({ snapType }: { snapType: SnapType }) {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [venue, setVenue] = useState("");
   const [title, setTitle] = useState("");
@@ -137,7 +139,6 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
   const [coverId, setCoverId] = useState<string | null>(null);
   const [isPreparingFiles, setIsPreparingFiles] = useState(false);
 
-  const [isDragOver, setIsDragOver] = useState(false);
   const [rejectedNames, setRejectedNames] = useState<string[]>([]);
 
   const [error, setError] = useState<string | null>(null);
@@ -407,43 +408,12 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
       <section className="rounded-lg border border-border p-6">
         <h2 className="font-medium">사진</h2>
 
-        <p className="mt-2 text-sm text-muted-foreground">
-          권장 규격: 장변 {RESIZE_MAX_WIDTH}px 추천 · JPG 또는 PNG · 장당{" "}
-          {MAX_FILE_SIZE_MB}MB 이하. 트래픽/용량 절약을 위해 가로{" "}
-          {RESIZE_MAX_WIDTH}px가 넘는 사진은 업로드 시 자동으로{" "}
-          {RESIZE_MAX_WIDTH}px로 축소돼요 (이하인 사진은 원본 그대로 유지).
+        <p className="mt-2 text-xs text-muted-foreground">
+          {GALLERY_PHOTO_UPLOAD_HINT}
         </p>
 
-        <div
-          onDragOver={(e) => {
-            e.preventDefault();
-            setIsDragOver(true);
-          }}
-          onDragLeave={() => setIsDragOver(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setIsDragOver(false);
-            if (e.dataTransfer.files) addFiles(e.dataTransfer.files);
-          }}
-          onClick={() => fileInputRef.current?.click()}
-          className={`mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors ${
-            isDragOver ? "border-primary bg-primary/5" : "border-border"
-          }`}
-        >
-          <p className="text-sm">
-            사진을 여기로 드래그하거나 클릭해서 선택하세요
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            여러 장 한 번에 선택 가능
-          </p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => e.target.files && addFiles(e.target.files)}
-          />
+        <div className="mt-4">
+          <PhotoDropzone onFiles={addFiles} disabled={submitting} />
         </div>
 
         {rejectedNames.length > 0 && (
@@ -462,8 +432,7 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
         {photos.length > 0 && (
           <>
             <p className="mt-4 text-sm text-muted-foreground">
-              {photos.length}장 선택됨 · 총 {totalSizeMb.toFixed(1)}MB ·
-              드래그해서 순서 변경, 사진에 마우스를 올려 대표 사진 지정
+              {photos.length}장 선택됨 · 드래그해서 순서 변경
               {submitting && ` · 업로드 완료 ${doneCount}/${photos.length}`}
             </p>
             <DndContext
