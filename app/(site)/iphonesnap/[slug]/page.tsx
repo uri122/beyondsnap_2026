@@ -42,7 +42,8 @@ export default async function IphoneSnapDetailPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const gallery = await getGalleryBySlug(params.slug);
+  const { slug } = await params;
+  const gallery = await getGalleryBySlug(slug);
 
   if (!gallery || gallery.snap_type !== "iphone") notFound();
 
