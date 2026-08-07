@@ -35,6 +35,7 @@ export default async function FilmsPage() {
                   src={film.thumbnail_url}
                   alt={`${film.title} 웨딩필름 썸네일 - ${film.venue}`}
                   fill
+                  quality={100}
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                   className="object-cover"
                 />

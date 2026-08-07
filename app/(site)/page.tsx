@@ -25,6 +25,7 @@ export default async function IntroPage() {
           alt="비욘드스냅 대표 컷"
           fill
           priority
+          quality={100}
           sizes="100vw"
           className="object-cover"
         />
@@ -53,6 +54,7 @@ export default async function IntroPage() {
                     src={gallery!.cover_image_url}
                     alt={`${label} 스타일로 촬영된 본식스냅 대표 사진`}
                     fill
+                    quality={100}
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover"
                   />

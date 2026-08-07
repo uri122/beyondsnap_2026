@@ -2,6 +2,7 @@
 const nextConfig = {
   images: {
     qualities: [90, 100],
+    formats: ["image/webp"],
     remotePatterns: [
       {
         // Cloudflare R2 공개 접근 도메인. r2.dev 서브도메인을 쓰는 경우 아래 그대로,

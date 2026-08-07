@@ -101,6 +101,7 @@ export default function ProductsPage() {
                     src="/images/main-snap-album-01.jpg"
                     alt="비욘드스냅 main snap 패키지에 포함되는 앨범 실물"
                     fill
+                    quality={100}
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 400px"
                   />

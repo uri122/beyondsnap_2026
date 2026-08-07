@@ -116,6 +116,7 @@ export function Header({
                 alt="Beyond Snap Photography"
                 width={256}
                 height={72}
+                quality={100}
                 className="w-40 lg:w-50 2xl:w-58 4xl:w-64 h-auto"
                 priority
               />

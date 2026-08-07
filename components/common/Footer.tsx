@@ -9,6 +9,7 @@ export function Footer() {
           alt="Beyond Snap Photography"
           width={467}
           height={132}
+          quality={100}
           className="w-65 sm:w-55 md:w-75 2xl:w-78 4xl:w-82 dark:invert"
         />
       </div>

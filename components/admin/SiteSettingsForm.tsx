@@ -28,7 +28,7 @@ export function SiteSettingsForm({
   const [loading, setLoading] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
 
-  const HERO_RESIZE_MAX_WIDTH = 2560; // QHD 기준
+  const HERO_RESIZE_MAX_WIDTH = 3000;
   const HERO_RESIZE_QUALITY = 0.85;
 
   // 로컬 미리보기용으로 만든 objectURL은 컴포넌트가 갱신/언마운트될 때 정리합니다.
@@ -105,7 +105,7 @@ export function SiteSettingsForm({
       <div>
         <p className="font-semibold text-neutral-700">메인 이미지</p>
         <p className="mt-2 text-xs leading-relaxed text-rose-600">
-          가로 <b>2560px(QHD) 이상</b>의 사진을 등록해주세요.
+          가로 <b>2560px(QHD) 이상</b>, 6MB 이하의 사진을 등록해주세요.
         </p>
 
         {heroPreviewUrl && (

@@ -55,6 +55,7 @@ function SortableFilmRow({ film }: { film: Film }) {
               src={film.thumbnail_url}
               alt=""
               fill
+              quality={100}
               className="object-cover"
               sizes="128px"
             />

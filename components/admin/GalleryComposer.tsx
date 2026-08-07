@@ -31,7 +31,7 @@ import {
 import { useSortableItem } from "@/hooks/useSortableItem";
 import { PhotoDropzone } from "@/components/admin/PhotoDropzone";
 import {
-  GALLERY_PHOTO_MAX_WIDTH as RESIZE_MAX_WIDTH,
+  GALLERY_PHOTO_MAX_DIMENSION as RESIZE_MAX_DIMENSION,
   GALLERY_PHOTO_QUALITY as RESIZE_QUALITY,
   GALLERY_PHOTO_MAX_FILE_SIZE_MB as MAX_FILE_SIZE_MB,
   GALLERY_PHOTO_UPLOAD_CONCURRENCY as UPLOAD_CONCURRENCY,
@@ -240,7 +240,7 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
       file: fileToSend,
       width,
       height,
-    } = await resizeImageFile(photo.file, RESIZE_MAX_WIDTH, RESIZE_QUALITY);
+    } = await resizeImageFile(photo.file, RESIZE_MAX_DIMENSION, RESIZE_QUALITY);
 
     const urlResult = await createUploadUrl({
       galleryId,
@@ -347,7 +347,6 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
     }
 
     router.push(`${listPath}`);
-    router.refresh();
   }
 
   return (

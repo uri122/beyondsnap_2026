@@ -1,24 +1,17 @@
 import { UPLOAD_CACHE_CONTROL } from "@/lib/r2/constants";
 
-// 업로드용 리사이즈: "가로(너비)"가 maxWidth를 넘을 때만 축소합니다 (세로 스크롤 갤러리라
-// 화면에 걸리는 건 너비 기준이라, 세로로 긴 사진이어도 너비만 기준으로 판단해요).
 export async function resizeImageFile(
   file: File,
-  maxWidth: number,
+  maxDimension: number,
   quality: number,
 ): Promise<{ file: File; width: number; height: number }> {
   const bitmap = await createImageBitmap(file);
   const originalWidth = bitmap.width;
   const originalHeight = bitmap.height;
 
-  // GIF는 리사이즈하면 애니메이션이 깨지고, 이미 기준 너비 이하면 업스케일하지 않고 원본 그대로 사용
-  if (file.type === "image/gif" || originalWidth <= maxWidth) {
-    bitmap.close();
-    return { file, width: originalWidth, height: originalHeight };
-  }
-
-  const scale = maxWidth / originalWidth;
-  const width = maxWidth;
+  const longerSide = Math.max(originalWidth, originalHeight);
+  const scale = longerSide > maxDimension ? maxDimension / longerSide : 1;
+  const width = Math.round(originalWidth * scale);
   const height = Math.round(originalHeight * scale);
 
   const canvas = document.createElement("canvas");
@@ -33,7 +26,7 @@ export async function resizeImageFile(
   ctx.drawImage(bitmap, 0, 0, width, height);
   bitmap.close();
 
-  // JPEG 대신 WebP로 인코딩 — 같은 화질 체감에서 20~35% 더 작아요.
+  // 같은 화질 체감에서 20~35% 더 작은 WebP로 인코딩
   const blob: Blob | null = await new Promise((resolve) =>
     canvas.toBlob(resolve, "image/webp", quality),
   );
@@ -68,7 +61,7 @@ export async function createPreviewThumbnail(
     bitmap.close();
 
     const blob: Blob | null = await new Promise((resolve) =>
-      canvas.toBlob(resolve, "image/jpeg", 0.6),
+      canvas.toBlob(resolve, "image/webp", 0.6),
     );
     return blob ? URL.createObjectURL(blob) : URL.createObjectURL(file);
   } catch {

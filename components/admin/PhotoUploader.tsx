@@ -11,7 +11,7 @@ import {
 import { useUploadQueueStore } from "@/store/useUploadQueueStore";
 import { PhotoDropzone } from "@/components/admin/PhotoDropzone";
 import {
-  GALLERY_PHOTO_MAX_WIDTH,
+  GALLERY_PHOTO_MAX_DIMENSION,
   GALLERY_PHOTO_QUALITY,
   GALLERY_PHOTO_MAX_FILE_SIZE_MB,
   GALLERY_PHOTO_UPLOAD_CONCURRENCY,
@@ -64,7 +64,7 @@ export function PhotoUploader({
           height,
         } = await resizeImageFile(
           item.file,
-          GALLERY_PHOTO_MAX_WIDTH,
+          GALLERY_PHOTO_MAX_DIMENSION,
           GALLERY_PHOTO_QUALITY,
         );
 
