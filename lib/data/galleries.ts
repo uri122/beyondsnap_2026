@@ -1,14 +1,20 @@
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
-import type { Gallery, GalleryPhoto, SnapType } from "@/types/database";
+import type {
+  Gallery,
+  GalleryPhoto,
+  SnapType,
+  CeremonyCategory,
+} from "@/types/database";
 
 export async function getPublishedGalleries(
   snapType: SnapType = "dslr",
 ): Promise<Gallery[]> {
   if (!isSupabaseConfigured) return [];
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("galleries")
     .select("*")
@@ -36,11 +42,11 @@ export async function getAllGalleries(
 
 // 카테고리 필터는 DSLR(예식) 갤러리 전용이라 snap_type을 'dslr'로 고정합니다.
 export async function getGalleriesByCategory(
-  category: string,
+  category: CeremonyCategory,
 ): Promise<Gallery[]> {
   if (!isSupabaseConfigured) return [];
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("galleries")
     .select("*")
@@ -53,11 +59,11 @@ export async function getGalleriesByCategory(
 }
 
 export async function getLatestGalleryByCategory(
-  category: string,
+  category: CeremonyCategory,
 ): Promise<Gallery | null> {
   if (!isSupabaseConfigured) return null;
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("galleries")
     .select("*")
@@ -75,7 +81,7 @@ export async function getLatestGalleryByCategory(
 export async function getGalleryBySlug(slug: string): Promise<Gallery | null> {
   if (!isSupabaseConfigured) return null;
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("galleries")
     .select("*")
@@ -113,12 +119,12 @@ export async function getGalleryPhotos(
 
 // DSLR(예식) 전용: 같은 카테고리 안에서 이전/다음
 export async function getAdjacentGalleries(
-  category: string,
+  category: CeremonyCategory,
   currentSortOrder: number,
 ): Promise<{ prev: Gallery | null; next: Gallery | null }> {
   if (!isSupabaseConfigured) return { prev: null, next: null };
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const [{ data: prevData }, { data: nextData }] = await Promise.all([
     supabase
@@ -152,7 +158,7 @@ export async function getAdjacentIphoneSnaps(
 ): Promise<{ prev: Gallery | null; next: Gallery | null }> {
   if (!isSupabaseConfigured) return { prev: null, next: null };
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const [{ data: prevData }, { data: nextData }] = await Promise.all([
     supabase

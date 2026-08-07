@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/env";
 
 export async function getSiteSettings(
@@ -8,7 +8,7 @@ export async function getSiteSettings(
     return Object.fromEntries(keys.map((key) => [key, ""]));
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("site_settings")
     .select("key, value")

@@ -1,11 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
 import type { Film } from "@/types/database";
 
 export async function getPublishedFilms(): Promise<Film[]> {
   if (!isSupabaseConfigured) return [];
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("films")
     .select("*")
@@ -38,7 +39,7 @@ export async function getFilmById(id: string): Promise<Film | null> {
 export async function getFilmBySlug(slug: string): Promise<Film | null> {
   if (!isSupabaseConfigured) return null;
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("films")
     .select("*")

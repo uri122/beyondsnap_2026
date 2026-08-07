@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getFaqById } from "@/lib/data/faqs";
 import { EditFaqForm } from "@/components/admin/EditFaqForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminFaqDetailPage({
   params,
 }: {

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/env";
 import type { Faq } from "@/types/database";
 
@@ -7,7 +8,7 @@ export async function getFaqs(): Promise<Faq[]> {
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("faqs")
     .select("*")

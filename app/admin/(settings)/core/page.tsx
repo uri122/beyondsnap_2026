@@ -2,6 +2,8 @@ import { getSiteSettings } from "@/lib/data/settings";
 import { SITE_SETTING_FIELDS } from "@/lib/settings-fields";
 import { SiteSettingsForm } from "@/components/admin/SiteSettingsForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminSettingsPage() {
   const textKeys = SITE_SETTING_FIELDS.map((field) => field.key);
   const settings = await getSiteSettings([...textKeys, "hero_image_url"]);

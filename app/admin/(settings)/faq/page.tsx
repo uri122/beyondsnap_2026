@@ -2,6 +2,8 @@ import { getFaqs } from "@/lib/data/faqs";
 import { NewFaqForm } from "@/components/admin/NewFaqForm";
 import { FaqList } from "@/components/admin/FaqList";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminFaqPage() {
   const faqs = await getFaqs();
 
