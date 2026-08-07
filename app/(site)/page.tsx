@@ -4,6 +4,8 @@ import { getSiteSettings } from "@/lib/data/settings";
 import { getLatestGalleryByCategory } from "@/lib/data/galleries";
 import { CEREMONY_CATEGORIES } from "@/lib/categories";
 
+export const revalidate = 3600; // 1시간
+
 export default async function IntroPage() {
   const [categoryShortcuts, settings] = await Promise.all([
     Promise.all(

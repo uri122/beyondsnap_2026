@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "비욘드스냅이 촬영한 웨딩 영상을 만나보세요.",
 };
 
+export const revalidate = 3600; // 1시간
+
 export default async function FilmsPage() {
   const films = await getPublishedFilms();
 

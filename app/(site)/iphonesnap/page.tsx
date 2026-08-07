@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "비욘드스냅이 아이폰으로 담은 본식 스냅을 만나보세요.",
 };
 
+export const revalidate = 3600; // 1시간
+
 export default async function IphoneSnapPage() {
   const galleries = await getPublishedGalleries("iphone");
 

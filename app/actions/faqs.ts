@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
+import { revalidatePath } from "next/cache";
 
 export async function createFaq(input: {
   question: string;
@@ -30,6 +31,8 @@ export async function createFaq(input: {
   });
 
   if (error) return { success: false as const, error: error.message };
+
+  revalidatePath("/faqs");
   return { success: true as const };
 }
 
@@ -58,6 +61,8 @@ export async function updateFaq(
     .eq("id", id);
 
   if (error) return { success: false as const, error: error.message };
+
+  revalidatePath("/faq");
   return { success: true as const };
 }
 
@@ -74,6 +79,8 @@ export async function deleteFaq(id: string) {
   const { error } = await supabase.from("faqs").delete().eq("id", id);
 
   if (error) return { success: false as const, error: error.message };
+
+  revalidatePath("/faqs");
   return { success: true as const };
 }
 
@@ -99,5 +106,7 @@ export async function reorderFaqs(
   const failed = results.find((r) => r.error);
   if (failed?.error)
     return { success: false as const, error: failed.error.message };
+
+  revalidatePath("/faq");
   return { success: true as const };
 }

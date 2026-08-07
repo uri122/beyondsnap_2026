@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
+import { revalidatePath } from "next/cache";
 import type { CeremonyCategory, SnapType, Database } from "@/types/database";
 
 type GalleryUpdate = Database["public"]["Tables"]["galleries"]["Update"];
@@ -70,6 +71,8 @@ export async function createGallery(input: {
     };
   }
 
+  revalidatePath(input.snapType === "dslr" ? "/ceremony" : "/iphonesnap");
+  revalidatePath("/");
   return { success: true as const, galleryId: data.id };
 }
 
@@ -81,6 +84,12 @@ export async function setCoverImage(galleryId: string, imageUrl: string) {
     .eq("id", galleryId);
 
   if (error) return { success: false as const, error: error.message };
+
+  revalidatePath("/ceremony");
+  revalidatePath("/iphonesnap");
+  revalidatePath("/ceremony/[slug]", "page");
+  revalidatePath("/iphonesnap/[slug]", "page");
+  revalidatePath("/");
   return { success: true as const };
 }
 
@@ -99,8 +108,15 @@ export async function reorderGalleries(
   );
 
   const failed = results.find((r) => r.error);
+
   if (failed?.error)
     return { success: false as const, error: failed.error.message };
+
+  revalidatePath("/ceremony");
+  revalidatePath("/iphonesnap");
+  revalidatePath("/ceremony/[slug]", "page");
+  revalidatePath("/iphonesnap/[slug]", "page");
+  revalidatePath("/");
   return { success: true as const };
 }
 
@@ -132,6 +148,12 @@ export async function updateGallery(
     .eq("id", galleryId);
 
   if (error) return { success: false as const, error: error.message };
+
+  revalidatePath("/ceremony");
+  revalidatePath("/iphonesnap");
+  revalidatePath("/ceremony/[slug]", "page");
+  revalidatePath("/iphonesnap/[slug]", "page");
+  revalidatePath("/");
   return { success: true as const };
 }
 
@@ -164,6 +186,13 @@ export async function deleteGallery(galleryId: string) {
     .from("galleries")
     .delete()
     .eq("id", galleryId);
+
   if (error) return { success: false as const, error: error.message };
+
+  revalidatePath("/ceremony");
+  revalidatePath("/iphonesnap");
+  revalidatePath("/ceremony/[slug]", "page");
+  revalidatePath("/iphonesnap/[slug]", "page");
+  revalidatePath("/");
   return { success: true as const };
 }

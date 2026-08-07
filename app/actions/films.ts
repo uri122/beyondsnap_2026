@@ -9,6 +9,7 @@ import {
 } from "@/lib/r2/client";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
+import { revalidatePath } from "next/cache";
 
 function slugifyFileName(name: string) {
   const dot = name.lastIndexOf(".");
@@ -94,6 +95,9 @@ export async function createFilm(input: {
       success: false as const,
       error: error?.message ?? "등록에 실패했습니다.",
     };
+
+  revalidatePath("/films");
+  revalidatePath("/films/[slug]", "page");
   return { success: true as const, filmId: data.id };
 }
 
@@ -125,6 +129,9 @@ export async function updateFilm(
     .eq("id", id);
 
   if (error) return { success: false as const, error: error.message };
+
+  revalidatePath("/films");
+  revalidatePath("/films/[slug]", "page");
   return { success: true as const };
 }
 
@@ -136,7 +143,11 @@ export async function deleteFilm(id: string, thumbnailUrl: string) {
 
   const supabase = createAdminClient();
   const { error } = await supabase.from("films").delete().eq("id", id);
+
   if (error) return { success: false as const, error: error.message };
+
+  revalidatePath("/films");
+  revalidatePath("/films/[slug]", "page");
   return { success: true as const };
 }
 
@@ -150,7 +161,11 @@ export async function reorderFilms(
     ),
   );
   const failed = results.find((r) => r.error);
+
   if (failed?.error)
     return { success: false as const, error: failed.error.message };
+
+  revalidatePath("/films");
+  revalidatePath("/films/[slug]", "page");
   return { success: true as const };
 }

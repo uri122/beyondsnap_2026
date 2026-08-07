@@ -5,6 +5,7 @@ import { r2Client, R2_BUCKET_NAME, R2_PUBLIC_URL } from "@/lib/r2/client";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
 import { UPLOAD_CACHE_CONTROL } from "@/lib/r2/constants";
+import { revalidatePath } from "next/cache";
 
 export async function uploadSiteImage(formData: FormData) {
   if (!isSupabaseConfigured) {
@@ -43,5 +44,7 @@ export async function uploadSiteImage(formData: FormData) {
     .upsert({ key: settingKey, value: imageUrl }, { onConflict: "key" });
 
   if (error) return { success: false, error: error.message };
+
+  revalidatePath("/", "layout");
   return { success: true, url: imageUrl };
 }
