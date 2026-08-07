@@ -25,7 +25,6 @@ export function EditFaqForm({ faq }: { faq: Faq }) {
     }
 
     router.push("/admin/faq");
-    router.refresh();
   };
 
   const handleDelete = async () => {
@@ -39,7 +38,6 @@ export function EditFaqForm({ faq }: { faq: Faq }) {
     }
 
     router.push("/admin/faq");
-    router.refresh();
   };
 
   return (
@@ -65,7 +63,8 @@ export function EditFaqForm({ faq }: { faq: Faq }) {
       </label>
 
       <p className="text-xs text-muted-foreground">
-        노출 순서는 이 페이지가 아니라 FAQ 목록에서 위/아래 버튼으로 바꿀 수 있어요.
+        노출 순서는 이 페이지가 아니라 FAQ 목록에서 위/아래 버튼으로 바꿀 수
+        있어요.
       </p>
 
       <div className="mt-2 flex gap-2">

@@ -87,7 +87,6 @@ export function EditFilmForm({ film }: { film: Film }) {
       return;
     }
     router.push("/admin/films");
-    router.refresh();
   }
 
   async function handleDelete() {
@@ -103,7 +102,6 @@ export function EditFilmForm({ film }: { film: Film }) {
       return;
     }
     router.push("/admin/films");
-    router.refresh();
   }
 
   return (

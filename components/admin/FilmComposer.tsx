@@ -105,7 +105,6 @@ export function FilmComposer() {
     }
 
     router.push("/admin/films");
-    router.refresh();
   }
 
   return (

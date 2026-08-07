@@ -41,7 +41,6 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
       return;
     }
     router.push(listPath);
-    router.refresh();
   }
 
   async function handleDelete() {
@@ -56,7 +55,6 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
       return;
     }
     router.push(listPath);
-    router.refresh();
   }
 
   return (
