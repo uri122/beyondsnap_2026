@@ -11,15 +11,20 @@ export default async function FaqPage() {
         FAQ
       </h1>
 
-      <div className="mt-20 divide-y divide-border">
+      <div className="mt-18 divide-y divide-border">
         {faqs.map((faq) => (
-          <details key={faq.id} className="group py-5">
-            <summary className="cursor-pointer list-none font-medium">
-              Q. {faq.question}
+          <details
+            key={faq.id}
+            className="group px-2 py-5 text-sm xl:text-base"
+          >
+            <summary className="flex items-center justify-between cursor-pointer list-none font-medium">
+              <span>Q. {faq.question}</span>
+              <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
             </summary>
-            <p className="mt-3 whitespace-pre-line text-muted-foreground">
-              A. {faq.answer}
-            </p>
+            <div className="mt-3 pr-2 flex text-muted-foreground">
+              <span className="font-medium">A.</span>
+              <p className="ml-1 whitespace-pre-line">{faq.answer}</p>
+            </div>
           </details>
         ))}
       </div>
