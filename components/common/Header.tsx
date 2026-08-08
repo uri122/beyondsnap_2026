@@ -108,22 +108,24 @@ export function Header({
           )}
 
           <div
-            className={`relative mx-auto flex items-center justify-between px-4 md:px-6 lg:px-12 transition-all duration-400 ${isTransparent ? "h-24 lg:h-30 2xl:h-34 4xl:h-40" : "h-16 lg:h-20 2xl:h-22 4xl:h-28"}`}
+            className={`relative mx-auto flex justify-between items-center px-4 md:px-6 lg:px-8 xl:px-12 transition-all duration-500 ease-in-out ${isTransparent ? "py-4 h-24 lg:h-28 2xl:py-5 2xl:h-36 4xl:py-10 4xl:pl-16 4xl:h-54" : "py-2 h-18 lg:h-20 2xl:h-22 4xl:py-3 4xl:h-28"}`}
           >
-            <Link href="/" className="flex items-center">
+            <Link
+              href="/"
+              className="relative block h-auto w-[160px] aspect-[3/1] lg:h-full lg:w-auto lg:aspect-[3/1]"
+            >
               <Image
                 src="/images/logo.png"
                 alt="Beyond Snap Photography"
-                width={256}
-                height={72}
-                quality={100}
-                className="w-40 lg:w-50 2xl:w-58 4xl:w-64 h-auto"
+                fill
+                sizes="(max-width: 768px) 160px, (max-width: 1024px) 320px, 440px"
+                className="object-contain"
                 priority
               />
             </Link>
 
             {/* 데스크톱 네비 (md 이상에서만 표시) */}
-            <nav className="hidden items-center gap-6 lg:gap-8 xl:gap-10 text-sm lg:text-base tracking-[-0.01em] md:flex">
+            <nav className="hidden items-center gap-4 lg:gap-8 xl:gap-10 4xl:gap-12 text-sm xl:text-base 4xl:text-lg tracking-[-0.01em] md:flex">
               {NAV_ITEMS.map((item) => {
                 const active = isNavActive(item.href);
                 return (
@@ -131,7 +133,7 @@ export function Header({
                     key={item.href}
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`transition-colors uppercase ${
+                    className={`transition-colors uppercase p-1 ${
                       active
                         ? "font-bold text-neutral-700"
                         : "text-neutral-900 hover:text-neutral-600"
