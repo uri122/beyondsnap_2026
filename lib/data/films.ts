@@ -49,3 +49,32 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
 
   return data;
 }
+
+export async function getAdjacentFilms(
+  currentSortOrder: number,
+): Promise<{ prev: Film | null; next: Film | null }> {
+  if (!isSupabaseConfigured) return { prev: null, next: null };
+
+  const supabase = createPublicClient();
+
+  const [{ data: prevData }, { data: nextData }] = await Promise.all([
+    supabase
+      .from("films")
+      .select("*")
+      .eq("published", true)
+      .gt("sort_order", currentSortOrder)
+      .order("sort_order", { ascending: true })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("films")
+      .select("*")
+      .eq("published", true)
+      .lt("sort_order", currentSortOrder)
+      .order("sort_order", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+
+  return { prev: prevData, next: nextData };
+}
