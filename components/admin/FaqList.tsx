@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   DndContext,
@@ -57,6 +57,10 @@ function SortableFaqRow({ faq }: { faq: Faq }) {
 
 export function FaqList({ faqs: initialFaqs }: { faqs: Faq[] }) {
   const [faqs, setFaqs] = useState(initialFaqs);
+
+  useEffect(() => {
+    setFaqs(initialFaqs);
+  }, [initialFaqs]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),

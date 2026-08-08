@@ -32,7 +32,7 @@ export async function createFaq(input: {
 
   if (error) return { success: false as const, error: error.message };
 
-  revalidatePath("/faqs");
+  revalidatePath("/faq");
   return { success: true as const };
 }
 
@@ -80,7 +80,7 @@ export async function deleteFaq(id: string) {
 
   if (error) return { success: false as const, error: error.message };
 
-  revalidatePath("/faqs");
+  revalidatePath("/faq");
   return { success: true as const };
 }
 
