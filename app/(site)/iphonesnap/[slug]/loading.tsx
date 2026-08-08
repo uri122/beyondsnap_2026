@@ -1,6 +1,6 @@
 export default function IphoneSnapDetailLoading() {
   return (
-    <section className="mx-auto max-w-4xl px-4 py-24 text-center sm:px-6">
+    <section className="mx-auto max-w-6xl text-center">
       <div className="inline-block h-8 w-24 animate-pulse rounded-sm bg-muted" />
 
       <div role="status" aria-live="polite">

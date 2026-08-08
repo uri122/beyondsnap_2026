@@ -34,11 +34,11 @@ export default async function IntroPage() {
       </section>
 
       {/* 세레모니 카테고리 숏컷: 각 카테고리 최신 게시글의 대표이미지 */}
-      <section className="w-full max-w-7xl 4xl:max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 pt-25 pb-35 sm:pt-30 sm:pb-40 text-center">
-        <h2 className="text-xl sm:text-3xl tracking-[0.3em] text-neutral-800 mb-2 uppercase">
+      <section className="w-full max-w-7xl 4xl:max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 pt-25 pb-35 sm:pt-30 sm:pb-40 4xl:pt-36 4xl:pb-50 text-center">
+        <h2 className="uppercase text-xl sm:text-3xl 4xl:text-4xl 4xl:font-medium tracking-[0.3em] text-neutral-800 mb-2 4xl:mb-3">
           Beyond the Venue
         </h2>
-        <p className="text-xs tracking-wide text-neutral-500 mb-12 sm:mb-16">
+        <p className="text-xs 4xl:text-sm tracking-wide text-neutral-500 mb-12 sm:mb-16">
           베뉴의 특성에 맞춘 비욘드스냅의 시선을 확인하세요
         </p>
         <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-5">

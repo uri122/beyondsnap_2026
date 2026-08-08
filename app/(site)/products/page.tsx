@@ -64,7 +64,7 @@ const MAIN_SNAP_ADDONS = [
 
 export default function ProductsPage() {
   return (
-    <section className="mx-auto max-w-8xl px-4 pt-24 pb-30 xl:pt-30">
+    <section className="mx-auto max-w-8xl">
       <h1 className="text-center mt-10 font-serif italic text-4xl text-neutral-400 tracking-widest md:tracking-[0.5em]">
         PRODUCTS
       </h1>

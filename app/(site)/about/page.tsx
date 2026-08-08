@@ -78,7 +78,7 @@ const staggerContainer = {
 
 export default function AboutPage() {
   return (
-    <section className="mx-auto max-w-9xl min-h-screen text-stone-900 px-6 pt-24 pb-30 md:px-10 xl:pt-30 4xl:max-w-10xl">
+    <section className="mx-auto max-w-6xl 2xl:max-w-9xl 4xl:max-w-10xl text-stone-900">
       <h1 className="text-center mt-10 font-serif italic text-4xl text-neutral-400 tracking-widest md:tracking-[0.5em]">
         ABOUT
       </h1>
@@ -91,7 +91,7 @@ export default function AboutPage() {
         viewport={{ once: true, margin: "-50px" }}
         variants={staggerContainer}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-12 lg:gap-16 4xl:gap-22">
+        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-12 lg:gap-16 4xl:gap-22 md:text-center 2xl:text-left">
           {ABOUT_DATA.philosophy.map((item) => {
             const [firstWord, ...restWords] = item.title.split(" ");
             const restOfTitle = restWords.join(" ");
@@ -101,7 +101,7 @@ export default function AboutPage() {
                 variants={fadeUp}
                 className="relative flex flex-col gap-4 py-6"
               >
-                <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-accent-rose"></div>
+                <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-accent-rose md:left-[50%] md:transform md:-translate-x-1/2 2xl:left-0 2xl:translate-x-0"></div>
 
                 <h2 className="text-3xl 2xl:text-4xl font-serif italic tracking-wide text-stone-900 leading-tight">
                   <span className="text-accent-rose font-light mr-2">

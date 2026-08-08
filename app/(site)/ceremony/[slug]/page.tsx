@@ -64,8 +64,7 @@ export default async function GalleryDetailPage({
     "min-w-20 shink-0 inline-flex justify-center items-center gap-1.5 rounded-sm border border-border px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted";
 
   return (
-    <section className="mx-auto max-w-6xl px-3 py-24 text-center sm:px-6 sm:py-24 lg:py-24 2xl:py-28 4xl:py-36">
-      {/* 상단: 목록으로 */}
+    <section className="mx-auto max-w-6xl text-center">
       <Link href={listHref} className={listButtonClass}>
         목록으로
       </Link>

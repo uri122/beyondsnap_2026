@@ -14,7 +14,7 @@ export default async function IphoneSnapPage() {
   const galleries = await getPublishedGalleries("iphone");
 
   return (
-    <section className="mx-auto max-w-11xl px-4 pt-24 pb-30 sm:px-6 lg:px-12 xl:pt-30">
+    <section className="mx-auto max-w-11xl">
       <h1 className="text-center mt-10 font-serif italic text-4xl text-neutral-400 tracking-widest md:tracking-[0.5em]">
         i-BEYOND
       </h1>

@@ -1,4 +1,5 @@
 import { getFaqs } from "@/lib/data/faqs";
+import { ChevronDown } from "lucide-react";
 
 export const revalidate = 3600; // 1시간
 
@@ -6,7 +7,7 @@ export default async function FaqPage() {
   const faqs = await getFaqs();
 
   return (
-    <section className="mx-auto max-w-5xl px-4 pt-24 pb-30 sm:px-6 lg:px-12 xl:pt-30">
+    <section className="mx-auto max-w-5xl">
       <h1 className="text-center mt-10 font-serif italic text-4xl text-neutral-400 tracking-widest md:tracking-[0.5em]">
         FAQ
       </h1>
