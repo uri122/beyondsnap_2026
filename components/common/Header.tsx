@@ -117,10 +117,10 @@ export function Header({
               <Image
                 src="/images/logo.png"
                 alt="Beyond Snap Photography"
+                loading="eager"
                 fill
                 sizes="(max-width: 768px) 160px, (max-width: 1024px) 320px, 440px"
                 className="object-contain"
-                priority
               />
             </Link>
 
