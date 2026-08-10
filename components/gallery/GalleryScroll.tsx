@@ -18,7 +18,7 @@ export function GalleryScroll({
 
   return (
     <>
-      <div className="mx-auto mt-10 flex max-w-[900px] flex-col items-center gap-10 sm:mt-16 sm:gap-24 lg:gap-28 3xl:max-w-[1050px] 4xl:max-w-[1150px] 5xl:max-w-[1300px]">        
+      <div className="mx-auto mt-10 flex max-w-[900px] flex-col items-center gap-10 sm:mt-16 sm:gap-24 lg:gap-28 3xl:max-w-[900px] 4xl:max-w-[1100px] 5xl:max-w-[1300px]">
         {photos.map((photo, i) => (
           <button
             key={photo.id}
@@ -30,7 +30,6 @@ export function GalleryScroll({
               src={photo.image_url}
               alt={altText ? `${altText} 사진 ${i + 1}` : ""}
               loading={i < 2 ? "eager" : "lazy"}
-              priority={i === 0}
               width={photo.width}
               height={photo.height}
             />
