@@ -72,7 +72,7 @@ export default async function CeremonyPage({
       </nav>
 
       <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-16 md:grid-cols-3 xl:grid-cols-4 xl:gap-x-6 4xl:grid-cols-5">
-        {galleries.map((gallery) => (
+        {galleries.map((gallery, idx) => (
           <Link
             key={gallery.id}
             href={
@@ -83,19 +83,17 @@ export default async function CeremonyPage({
             className="group block"
           >
             <div className="relative aspect-[2/3] w-full overflow-hidden bg-muted">
-              <div className="relative aspect-[2/3] w-full overflow-hidden bg-muted">
-                {gallery.cover_image_url && (
-                  <Image
-                    src={gallery.cover_image_url}
-                    alt={`${gallery.venue} 본식스냅 - ${gallery.title}`}
-                    fill
-                    quality={100}
-                    loading="eager"
-                    sizes="(max-width: 768px) 70vw, (max-width: 1280px) 45vw, (max-width: 1920px) 35vw, 30vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                )}
-              </div>
+              {gallery.cover_image_url && (
+                <Image
+                  src={gallery.cover_image_url}
+                  alt={`${gallery.venue} 본식스냅 - ${gallery.title}`}
+                  fill
+                  quality={100}
+                  loading={idx < 5 ? "eager" : "lazy"}
+                  sizes="(max-width: 768px) 70vw, (max-width: 1280px) 45vw, (max-width: 1920px) 35vw, 30vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              )}
             </div>
             <div className="mt-3 md:mt-3">
               <p className="font-serif text-sm lg:text-xl font-medium text-foreground">

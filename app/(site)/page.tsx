@@ -26,7 +26,7 @@ export default async function IntroPage() {
           src={heroImageUrl}
           alt="비욘드스냅 대표 컷"
           fill
-          priority
+          preload
           quality={100}
           sizes="100vw"
           className="object-cover"
