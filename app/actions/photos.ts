@@ -112,8 +112,8 @@ export async function deleteGalleryPhoto(
     .eq("id", galleryId)
     .maybeSingle();
 
-  const wasCover =
-    Boolean(thumbnailUrl) && gallery?.cover_image_url === thumbnailUrl;
+  const coverCandidate = thumbnailUrl ?? imageUrl;
+  const wasCover = gallery?.cover_image_url === coverCandidate;
 
   if (wasCover) {
     const { data: nextPhoto } = await supabase
