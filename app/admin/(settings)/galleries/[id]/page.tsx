@@ -39,7 +39,7 @@ export default async function AdminGalleryDetailPage({
         <p className="text-muted-foreground">{gallery.title}</p>
       </div>
 
-      <GalleryEditForm gallery={gallery} />
+      <GalleryEditForm gallery={gallery} photoCount={photos.length} />
 
       <div className="rounded-lg border border-border p-6">
         <h2 className="font-medium">사진 업로드</h2>

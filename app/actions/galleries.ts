@@ -120,7 +120,6 @@ export async function reorderGalleries(
   return { success: true as const };
 }
 
-// venue_type은 dslr 갤러리만 편집 화면에 노출되므로 optional로 받습니다.
 export async function updateGallery(
   galleryId: string,
   input: {
@@ -134,7 +133,26 @@ export async function updateGallery(
     return { success: false as const, error: "예식장명은 필수예요." };
   }
 
+  if (input.published && !input.title.trim()) {
+    return { success: false as const, error: "공개하려면 제목은 필수예요." };
+  }
+
   const supabase = createAdminClient();
+
+  if (input.published) {
+    const { count } = await supabase
+      .from("gallery_photos")
+      .select("id", { count: "exact", head: true })
+      .eq("gallery_id", galleryId);
+
+    if (!count) {
+      return {
+        success: false as const,
+        error: "공개하려면 사진을 최소 1장 이상 등록해주세요.",
+      };
+    }
+  }
+
   const updatePayload: GalleryUpdate = {
     venue: input.venue.trim(),
     title: input.title.trim() || input.venue.trim(),

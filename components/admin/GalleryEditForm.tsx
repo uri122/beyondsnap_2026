@@ -6,7 +6,13 @@ import { CEREMONY_CATEGORIES } from "@/lib/categories";
 import { updateGallery, deleteGallery } from "@/app/actions/galleries";
 import type { CeremonyCategory, Gallery } from "@/types/database";
 
-export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
+export function GalleryEditForm({
+  gallery,
+  photoCount,
+}: {
+  gallery: Gallery;
+  photoCount: number;
+}) {
   const router = useRouter();
   const [venue, setVenue] = useState(gallery.venue);
   const [title, setTitle] = useState(gallery.title);
@@ -26,6 +32,16 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
 
   async function handleSave() {
     setError(null);
+
+    if (published && !title.trim()) {
+      setError("공개하려면 제목은 필수예요.");
+      return;
+    }
+    if (published && photoCount === 0) {
+      setError("공개하려면 사진을 최소 1장 이상 등록해주세요.");
+      return;
+    }
+
     setSaving(true);
 
     const result = await updateGallery(gallery.id, {
@@ -128,31 +144,40 @@ export function GalleryEditForm({ gallery }: { gallery: Gallery }) {
         )}
       </div>
 
-      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
-      {published !== gallery.published && !error && (
-        <p className="mt-3 text-sm text-amber-600">
-          공개 상태가 변경됐어요. 저장을 눌러야 실제로 반영돼요.
-        </p>
-      )}
+      <div className="mt-8">
+        {error && (
+          <p className="mt-2 text-sm font-medium text-red-500">{error}</p>
+        )}
+        {published && photoCount === 0 && !error && (
+          <p className="mt-2 text-sm text-amber-600">
+            사진이 없어요. 저장 시 자동으로 비공개로 처리돼요.
+          </p>
+        )}
+        {published !== gallery.published && !error && (
+          <p className="mt-2 text-sm text-amber-600">
+            공개 상태가 변경됐어요. 저장을 눌러야 실제로 반영돼요.
+          </p>
+        )}
 
-      <div className="mt-5 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={saving || deleting}
-          className="rounded-md bg-primary px-6 py-2 font-medium text-primary-foreground disabled:opacity-50"
-        >
-          {saving ? "저장 중..." : "저 장"}
-        </button>
+        <div className="mt-3 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving || deleting}
+            className="rounded-md bg-primary px-6 py-2 font-medium text-primary-foreground disabled:opacity-50"
+          >
+            {saving ? "저장 중..." : "저 장"}
+          </button>
 
-        <button
-          type="button"
-          onClick={handleDelete}
-          disabled={saving || deleting}
-          className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
-        >
-          {deleting ? "삭제 중..." : "삭 제"}
-        </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={saving || deleting}
+            className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+          >
+            {deleting ? "삭제 중..." : "삭 제"}
+          </button>
+        </div>
       </div>
     </section>
   );
