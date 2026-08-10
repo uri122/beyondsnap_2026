@@ -117,36 +117,41 @@ export async function getGalleryPhotos(
   return data ?? [];
 }
 
-// DSLR(예식) 전용: 같은 카테고리 안에서 이전/다음
+// DSLR(예식) 전용: category를 주면 그 카테고리 안에서, 안 주면 dslr 전체에서 이전/다음
 export async function getAdjacentGalleries(
-  category: CeremonyCategory,
   currentSortOrder: number,
+  category?: CeremonyCategory,
 ): Promise<{ prev: Gallery | null; next: Gallery | null }> {
   if (!isSupabaseConfigured) return { prev: null, next: null };
 
   const supabase = createPublicClient();
 
+  let prevQuery = supabase
+    .from("galleries")
+    .select("*")
+    .eq("published", true)
+    .eq("snap_type", "dslr")
+    .gt("sort_order", currentSortOrder)
+    .order("sort_order", { ascending: true })
+    .limit(1);
+
+  let nextQuery = supabase
+    .from("galleries")
+    .select("*")
+    .eq("published", true)
+    .eq("snap_type", "dslr")
+    .lt("sort_order", currentSortOrder)
+    .order("sort_order", { ascending: false })
+    .limit(1);
+
+  if (category) {
+    prevQuery = prevQuery.eq("venue_type", category);
+    nextQuery = nextQuery.eq("venue_type", category);
+  }
+
   const [{ data: prevData }, { data: nextData }] = await Promise.all([
-    supabase
-      .from("galleries")
-      .select("*")
-      .eq("published", true)
-      .eq("snap_type", "dslr")
-      .eq("venue_type", category)
-      .gt("sort_order", currentSortOrder)
-      .order("sort_order", { ascending: true })
-      .limit(1)
-      .maybeSingle(),
-    supabase
-      .from("galleries")
-      .select("*")
-      .eq("published", true)
-      .eq("snap_type", "dslr")
-      .eq("venue_type", category)
-      .lt("sort_order", currentSortOrder)
-      .order("sort_order", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
+    prevQuery.maybeSingle(),
+    nextQuery.maybeSingle(),
   ]);
 
   return { prev: prevData, next: nextData };

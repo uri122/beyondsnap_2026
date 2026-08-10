@@ -9,7 +9,7 @@ import {
 } from "@/lib/data/galleries";
 import { GalleryScroll } from "@/components/gallery/GalleryScroll";
 import { ScrollToTopButton } from "@/components/common/ScrollToTopButton";
-import { getCeremonyCategoryLabel } from "@/lib/categories";
+import { getCeremonyCategoryLabel, isCeremonyCategory } from "@/lib/categories";
 
 export async function generateMetadata({
   params,
@@ -41,24 +41,35 @@ export async function generateMetadata({
 
 export default async function GalleryDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ type?: string }>;
 }) {
   const { slug } = await params;
   const gallery = await getGalleryBySlug(slug);
   if (!gallery || gallery.snap_type !== "dslr" || !gallery.venue_type)
     notFound();
 
-  const venueType = gallery.venue_type; // 좁혀진 타입을 변수로 고정
+  const { type } = await searchParams;
+  // 쿼리로 들어온 카테고리가 실제로 이 갤러리의 카테고리와 일치할 때만 "필터된 상태로 들어왔다"고 인정.
+  // (다른 카테고리 값을 넣거나 존재하지 않는 값을 넣는 등의 URL 조작 방지)
+  const categoryScope =
+    type && isCeremonyCategory(type) && type === gallery.venue_type
+      ? gallery.venue_type
+      : null;
 
   const photos = await getGalleryPhotos(gallery.id);
   const { prev, next } = await getAdjacentGalleries(
-    venueType,
     gallery.sort_order,
+    categoryScope ?? undefined,
   );
 
-  const categoryLabel = getCeremonyCategoryLabel(venueType);
-  const listHref = `/ceremony?type=${venueType}`;
+  const categoryLabel = getCeremonyCategoryLabel(gallery.venue_type);
+  const listHref = categoryScope
+    ? `/ceremony?type=${categoryScope}`
+    : "/ceremony";
+  const detailQuery = categoryScope ? `?type=${categoryScope}` : "";
 
   const listButtonClass =
     "min-w-20 shink-0 inline-flex justify-center items-center gap-1.5 rounded-sm border border-border px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted";
@@ -89,7 +100,7 @@ export default async function GalleryDetailPage({
         <div className="flex justify-between items-center items-stretch gap-2 text-xs sm:text-sm md:gap-6">
           {prev ? (
             <Link
-              href={`/ceremony/${prev.slug}`}
+              href={`/ceremony/${prev.slug}${detailQuery}`}
               aria-label={`이전 갤러리: ${prev.venue} ${prev.title}`}
               className="min-w-40 flex-1 flex flex-col gap-0.5 rounded-md border border-border px-3 py-2 hover:bg-muted/50"
             >
@@ -113,7 +124,7 @@ export default async function GalleryDetailPage({
 
           {next ? (
             <Link
-              href={`/ceremony/${next.slug}`}
+              href={`/ceremony/${next.slug}${detailQuery}`}
               aria-label={`다음 갤러리: ${next.venue} ${next.title}`}
               className="min-w-40 flex-1 flex flex-col items-end gap-1 rounded-md border border-border px-3 py-2 text-right hover:bg-muted/50"
             >

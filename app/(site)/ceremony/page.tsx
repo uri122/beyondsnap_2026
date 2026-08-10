@@ -75,7 +75,11 @@ export default async function CeremonyPage({
         {galleries.map((gallery) => (
           <Link
             key={gallery.id}
-            href={`/ceremony/${gallery.slug}`}
+            href={
+              activeCategory
+                ? `/ceremony/${gallery.slug}?type=${activeCategory}`
+                : `/ceremony/${gallery.slug}`
+            }
             className="group block"
           >
             <div className="relative aspect-[2/3] w-full overflow-hidden bg-muted">
