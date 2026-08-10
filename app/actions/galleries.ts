@@ -12,7 +12,7 @@ function slugify(text: string) {
     .trim()
     .toLowerCase()
     .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9가-힣-]/g, "");
+    .replace(/[^a-z0-9ㄱ-ㅎㅏ-ㅣ가-힣-]/g, "");
 }
 
 export async function createGallery(input: {
@@ -57,7 +57,7 @@ export async function createGallery(input: {
       venue: input.venue.trim(),
       venue_type: input.snapType === "dslr" ? input.venueType : null,
       snap_type: input.snapType,
-      slug: `${slugify(input.venue)}-${Date.now()}`,
+      slug: `${encodeURIComponent(slugify(input.venue))}-${Date.now()}`,
       published: input.published,
       sort_order: nextSortOrder,
     })

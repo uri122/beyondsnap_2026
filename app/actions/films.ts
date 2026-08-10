@@ -26,7 +26,7 @@ function slugify(text: string) {
     .trim()
     .toLowerCase()
     .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9가-힣-]/g, "");
+    .replace(/[^a-z0-9ㄱ-ㅎㅏ-ㅣ가-힣-]/g, "");
 }
 
 export async function createFilmThumbnailUploadUrl(input: {
@@ -81,7 +81,7 @@ export async function createFilm(input: {
     .insert({
       venue: input.venue.trim(),
       title: input.title.trim() || input.venue.trim(),
-      slug: `${slugify(input.venue)}-${Date.now()}`,
+      slug: `${encodeURIComponent(slugify(input.venue))}-${Date.now()}`,
       video_url: input.videoUrl.trim(),
       thumbnail_url: input.thumbnailUrl,
       published: input.published,
