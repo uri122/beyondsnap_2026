@@ -9,6 +9,7 @@ import { createUploadUrl, confirmPhotoUpload } from "@/app/actions/photos";
 import {
   resizeImageFile,
   createPreviewThumbnail,
+  createCroppedThumbnail,
   uploadFileDirect,
   runWithConcurrency,
 } from "@/lib/client/upload";
@@ -36,6 +37,9 @@ import {
   GALLERY_PHOTO_MAX_FILE_SIZE_MB as MAX_FILE_SIZE_MB,
   GALLERY_PHOTO_UPLOAD_CONCURRENCY as UPLOAD_CONCURRENCY,
   GALLERY_PHOTO_UPLOAD_HINT,
+  GALLERY_THUMBNAIL_ASPECT,
+  GALLERY_THUMBNAIL_WIDTH,
+  GALLERY_THUMBNAIL_QUALITY,
 } from "@/lib/upload-config";
 
 type QueuedPhoto = {
@@ -242,6 +246,19 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
       height,
     } = await resizeImageFile(photo.file, RESIZE_MAX_DIMENSION, RESIZE_QUALITY);
 
+    // 리스트용 크롭 썸네일 준비 (실패해도 원본 업로드는 계속 진행)
+    let thumbFile: File | null = null;
+    try {
+      thumbFile = await createCroppedThumbnail(
+        photo.file,
+        GALLERY_THUMBNAIL_ASPECT,
+        GALLERY_THUMBNAIL_WIDTH,
+        GALLERY_THUMBNAIL_QUALITY,
+      );
+    } catch {
+      // 무시하고 원본으로 폴백
+    }
+
     const urlResult = await createUploadUrl({
       galleryId,
       fileName: fileToSend.name,
@@ -250,6 +267,23 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
     if (!urlResult.success) {
       updatePhoto(photo.id, { status: "error" });
       return { success: false as const, name: photo.file.name };
+    }
+
+    let thumbnailUrl: string | undefined;
+    if (thumbFile) {
+      const thumbUrlResult = await createUploadUrl({
+        galleryId,
+        fileName: thumbFile.name,
+        contentType: thumbFile.type,
+      });
+      if (thumbUrlResult.success) {
+        try {
+          await uploadFileDirect(thumbFile, thumbUrlResult.uploadUrl, () => {});
+          thumbnailUrl = thumbUrlResult.publicUrl;
+        } catch {
+          // 무시
+        }
+      }
     }
 
     try {
@@ -264,6 +298,7 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
     const confirmResult = await confirmPhotoUpload({
       galleryId,
       imageUrl: urlResult.publicUrl,
+      thumbnailUrl,
       sortOrder,
       width,
       height,
@@ -277,6 +312,7 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
     return {
       success: true as const,
       imageUrl: urlResult.publicUrl,
+      thumbnailUrl,
       isCover: photo.id === coverId,
     };
   }
@@ -331,7 +367,8 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
         async (photo, index) => {
           const uploadResult = await uploadOnePhoto(photo, galleryId, index);
           if (!uploadResult.success) failedNames.push(uploadResult.name);
-          else if (uploadResult.isCover) coverUrl = uploadResult.imageUrl;
+          else if (uploadResult.isCover)
+            coverUrl = uploadResult.thumbnailUrl ?? uploadResult.imageUrl;
         },
       );
     }

@@ -37,9 +37,65 @@ export async function resizeImageFile(
   return { file: resizedFile, width, height };
 }
 
-// 등록 화면 미리보기 전용 "작은" 썸네일 생성 (원본 그대로 <img>에 물리면 고해상도 사진
-// 수십 장을 브라우저가 전부 디코딩해야 해서 화면이 버벅여요. 실제로 표시되는 크기에 맞는
-// 작은 비트맵을 미리 만들어두면 디코딩 비용이 크게 줄어요).
+// 원본을 targetAspect 비율로 센터크롭한 뒤 targetWidth 폭으로 인코딩.
+// 리스트 그리드처럼 항상 같은 비율 박스에 object-cover로 들어가는 이미지 전용.
+export async function createCroppedThumbnail(
+  file: File,
+  targetAspect: number,
+  targetWidth: number,
+  quality: number,
+): Promise<File> {
+  const bitmap = await createImageBitmap(file);
+  const originalWidth = bitmap.width;
+  const originalHeight = bitmap.height;
+  const originalAspect = originalWidth / originalHeight;
+
+  let sx = 0;
+  let sy = 0;
+  let sWidth = originalWidth;
+  let sHeight = originalHeight;
+
+  if (originalAspect > targetAspect) {
+    sWidth = originalHeight * targetAspect;
+    sx = (originalWidth - sWidth) / 2;
+  } else {
+    sHeight = originalWidth / targetAspect;
+    sy = (originalHeight - sHeight) / 2;
+  }
+
+  const targetHeight = Math.round(targetWidth / targetAspect);
+  const canvas = document.createElement("canvas");
+  canvas.width = targetWidth;
+  canvas.height = targetHeight;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    bitmap.close();
+    throw new Error("캔버스를 생성할 수 없습니다.");
+  }
+
+  ctx.drawImage(
+    bitmap,
+    sx,
+    sy,
+    sWidth,
+    sHeight,
+    0,
+    0,
+    targetWidth,
+    targetHeight,
+  );
+  bitmap.close();
+
+  const blob: Blob | null = await new Promise((resolve) =>
+    canvas.toBlob(resolve, "image/webp", quality),
+  );
+  if (!blob) throw new Error("썸네일 생성에 실패했습니다.");
+
+  const newName = file.name.replace(/\.\w+$/, "") + "-thumb.webp";
+  return new File([blob], newName, { type: "image/webp" });
+}
+
+// 등록 화면 미리보기 전용 "작은" 썸네일 생성
 export async function createPreviewThumbnail(
   file: File,
   maxDim = 320,

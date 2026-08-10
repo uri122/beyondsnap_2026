@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createUploadUrl, confirmPhotoUpload } from "@/app/actions/photos";
 import {
   resizeImageFile,
+  createCroppedThumbnail,
   uploadFileDirect,
   runWithConcurrency,
 } from "@/lib/client/upload";
@@ -16,6 +17,9 @@ import {
   GALLERY_PHOTO_MAX_FILE_SIZE_MB,
   GALLERY_PHOTO_UPLOAD_CONCURRENCY,
   GALLERY_PHOTO_UPLOAD_HINT,
+  GALLERY_THUMBNAIL_ASPECT,
+  GALLERY_THUMBNAIL_WIDTH,
+  GALLERY_THUMBNAIL_QUALITY,
 } from "@/lib/upload-config";
 
 export function PhotoUploader({
@@ -68,6 +72,18 @@ export function PhotoUploader({
           GALLERY_PHOTO_QUALITY,
         );
 
+        let thumbFile: File | null = null;
+        try {
+          thumbFile = await createCroppedThumbnail(
+            item.file,
+            GALLERY_THUMBNAIL_ASPECT,
+            GALLERY_THUMBNAIL_WIDTH,
+            GALLERY_THUMBNAIL_QUALITY,
+          );
+        } catch {
+          // 무시하고 원본으로 폴백
+        }
+
         const urlResult = await createUploadUrl({
           galleryId,
           fileName: fileToSend.name,
@@ -76,6 +92,27 @@ export function PhotoUploader({
         if (!urlResult.success) {
           setStatus(item.id, "error");
           return;
+        }
+
+        let thumbnailUrl: string | undefined;
+        if (thumbFile) {
+          const thumbUrlResult = await createUploadUrl({
+            galleryId,
+            fileName: thumbFile.name,
+            contentType: thumbFile.type,
+          });
+          if (thumbUrlResult.success) {
+            try {
+              await uploadFileDirect(
+                thumbFile,
+                thumbUrlResult.uploadUrl,
+                () => {},
+              );
+              thumbnailUrl = thumbUrlResult.publicUrl;
+            } catch {
+              // 무시
+            }
+          }
         }
 
         try {
@@ -90,6 +127,7 @@ export function PhotoUploader({
         const confirmResult = await confirmPhotoUpload({
           galleryId,
           imageUrl: urlResult.publicUrl,
+          thumbnailUrl,
           sortOrder: existingCount + index,
           width,
           height,

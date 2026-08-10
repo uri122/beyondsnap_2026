@@ -145,23 +145,19 @@ export function PhotoGrid({
 
   async function handleDelete(photo: GalleryPhoto) {
     setBusyId(photo.id);
-    const result = await deleteGalleryPhoto(photo.id, photo.image_url);
+    const result = await deleteGalleryPhoto(
+      galleryId,
+      photo.id,
+      photo.image_url,
+      photo.thumbnail_url,
+    );
     setBusyId(null);
     if (!result.success) {
       alert(result.error ?? "삭제에 실패했어요.");
       return;
     }
     setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
-    router.refresh();
-  }
-
-  async function handleSetCover(photo: GalleryPhoto) {
-    setBusyId(photo.id);
-    const result = await setCoverImage(galleryId, photo.image_url);
-    setBusyId(null);
-    if (!result.success)
-      alert(result.error ?? "썸네일 사진 설정에 실패했어요.");
-    else router.refresh();
+    router.refresh(); // 커버가 자동 교체됐을 수 있어 서버 데이터 새로 반영
   }
 
   if (photos.length === 0) {
@@ -170,6 +166,18 @@ export function PhotoGrid({
         아직 업로드된 사진이 없어요.
       </p>
     );
+  }
+
+  async function handleSetCover(photo: GalleryPhoto) {
+    setBusyId(photo.id);
+    const result = await setCoverImage(
+      galleryId,
+      photo.thumbnail_url ?? photo.image_url,
+    );
+    setBusyId(null);
+    if (!result.success)
+      alert(result.error ?? "썸네일 사진 설정에 실패했어요.");
+    else router.refresh();
   }
 
   const isSaving = saveStatus === "saving";
@@ -213,7 +221,9 @@ export function PhotoGrid({
               <SortablePhotoTile
                 key={photo.id}
                 photo={photo}
-                isCover={coverImageUrl === photo.image_url}
+                isCover={
+                  coverImageUrl === (photo.thumbnail_url ?? photo.image_url)
+                }
                 busy={busyId === photo.id}
                 disabled={isSaving}
                 onSetCover={() => handleSetCover(photo)}
