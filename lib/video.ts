@@ -33,11 +33,13 @@ export function getVideoEmbedUrl(url: string): string | null {
       return id ? `https://tv.naver.com/embed/${id}` : null;
     }
 
-    if (host === "tv.kakao.com") {
+    if (host === "tv.kakao.com" || host === "play-tv.kakao.com") {
       const segments = parsed.pathname.split("/").filter(Boolean);
       const videoIndex = segments.indexOf("v");
       const id = videoIndex >= 0 ? segments[videoIndex + 1] : null;
-      return id ? `https://tv.naver.com/embed/${id}` : null;
+      return id
+        ? `https://play-tv.kakao.com/embed/player/cliplink/${id}`
+        : null;
     }
 
     return null;
