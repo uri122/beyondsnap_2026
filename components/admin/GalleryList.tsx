@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   DndContext,
   PointerSensor,
@@ -46,22 +47,28 @@ function SortableGalleryRow({ gallery }: { gallery: Gallery }) {
 
       <Link
         href={`/admin/galleries/${gallery.id}`}
-        className="flex flex-1 items-center justify-between gap-3 rounded-md px-2 py-3 hover:bg-muted/50"
+        className="flex flex-1 items-center justify-between gap-3 px-2 py-3 hover:bg-muted/50"
       >
         <div className="flex items-center gap-4">
-          {gallery.cover_image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={gallery.cover_image_url}
-              alt=""
-              className="h-18 w-18 rounded-md border border-border object-cover"
-            />
-          ) : (
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-dashed border-border text-[10px] text-muted-foreground">
-              사진없음
-            </div>
-          )}
+          <div className="relative w-[60px] h-[80px]">
+            {gallery.cover_image_url ? (
+              <Image
+                src={gallery.cover_image_url}
+                alt="커버 이미지"
+                className="border border-border object-cover rounded-sm"
+                fill
+                sizes="60px"
+              />
+            ) : (
+              <div className="flex h-full w-full shrink-0 items-center justify-center rounded-sm border border-dashed border-border text-[10px] text-muted-foreground">
+                사진없음
+              </div>
+            )}
+          </div>
           <div>
+            <p className="text-xs text-muted-foreground uppercase">
+              {gallery.venue_type}
+            </p>
             <p className="font-medium">{gallery.venue}</p>
             <p className="text-muted-foreground">{gallery.title}</p>
           </div>
