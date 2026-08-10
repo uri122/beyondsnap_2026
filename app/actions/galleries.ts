@@ -180,7 +180,7 @@ export async function deleteGallery(galleryId: string) {
 
   const { data: photos } = await supabase
     .from("gallery_photos")
-    .select("image_url")
+    .select("image_url, thumbnail_url")
     .eq("gallery_id", galleryId);
 
   if (photos && photos.length > 0) {
@@ -188,18 +188,18 @@ export async function deleteGallery(galleryId: string) {
       await import("@/lib/r2/client");
     const { DeleteObjectsCommand } = await import("@aws-sdk/client-s3");
 
+    const keysToDelete = photos
+      .flatMap((p) => [p.image_url, p.thumbnail_url])
+      .filter((url): url is string => Boolean(url))
+      .map((url) => url.replace(`${R2_PUBLIC_URL}/`, ""));
+
     await r2Client.send(
       new DeleteObjectsCommand({
         Bucket: R2_BUCKET_NAME,
-        Delete: {
-          Objects: photos.map((p) => ({
-            Key: p.image_url.replace(`${R2_PUBLIC_URL}/`, ""),
-          })),
-        },
+        Delete: { Objects: keysToDelete.map((Key) => ({ Key })) },
       }),
     );
   }
-
   const { error } = await supabase
     .from("galleries")
     .delete()
