@@ -20,9 +20,18 @@ const lora = Lora({
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings(["intro_text"]);
 
+  const title = "비욘드스냅 | Beyond Snap";
+  const description = settings.intro_text || "눈부신 오늘의 순간을 기록합니다.";
+
   return {
-    title: "비욘드스냅 | Beyond Snap",
-    description: settings.intro_text || "눈부신 오늘의 순간을 기록합니다.",
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      locale: "ko_KR",
+      type: "website",
+    },
 
     // 개발중 색인 차단
     robots: {
