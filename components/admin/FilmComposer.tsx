@@ -144,16 +144,10 @@ export function FilmComposer() {
         <input
           value={videoUrl}
           onChange={(e) => setVideoUrl(e.target.value)}
-          placeholder="https://www.youtube.com/watch?v=..."
+          placeholder="예: https://www.youtube.com/watch?v=..., https://tv.naver.com/v/..., https://vimeo.com/..."
           className="w-full rounded-md border border-border px-3 py-2"
           disabled={submitting}
         />
-        {videoUrl.trim() && embedPreviewAvailable === false && (
-          <p className="mt-1 text-xs text-amber-600">
-            유튜브/비메오 링크가 아니면 사이트에서 미리보기 재생 대신 "새 창에서
-            보기" 링크로 표시돼요.
-          </p>
-        )}
       </div>
 
       <div>
