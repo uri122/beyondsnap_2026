@@ -47,10 +47,12 @@ export default async function FilmsPage() {
                   </span>
                 </div>
               </div>
-              <p className="mt-3 font-serif text-lg font-medium text-foreground">
+              <p className="mt-3 font-serif text-sm lg:text-xl font-medium text-foreground">
                 {film.venue}
               </p>
-              <p className="text-sm text-muted-foreground">{film.title}</p>
+              <p className="mt-1 text-xs lg:text-base text-muted-foreground">
+                {film.title}
+              </p>
             </Link>
           ))}
         </div>

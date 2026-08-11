@@ -95,7 +95,7 @@ export default async function CeremonyPage({
                 />
               )}
             </div>
-            <div className="mt-3 md:mt-3">
+            <div className="mt-3">
               <p className="font-serif text-sm lg:text-xl font-medium text-foreground">
                 {gallery.venue}
               </p>
