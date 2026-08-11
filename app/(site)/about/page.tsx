@@ -19,7 +19,7 @@ const ABOUT_DATA = {
     {
       id: "03",
       title: "Beyond Snap",
-      description: "비욘드의 촬영철학을 이해하는 전속작가만 두분을 담습니다.",
+      description: "비욘드의 감성을 이해하는 작가만 담습니다.",
     },
     {
       id: "04",
@@ -34,7 +34,7 @@ const ABOUT_DATA = {
       members: ["김한결", "김민지", "이종연", "조윤재"],
     },
     {
-      role: "작가",
+      role: "메인작가",
       roleEn: "Photographers",
       members: [
         "김소희",
@@ -52,9 +52,9 @@ const ABOUT_DATA = {
       ],
     },
     {
-      role: "아이폰 스냅 작가",
-      roleEn: "iPhone Photographers",
-      members: ["김주연", "이소연"],
+      role: "아이폰 & 영상",
+      roleEn: "iPhone & Video",
+      members: ["김주연", "이소연", "원철홍", "이현우", "문지원"],
     },
   ],
 };
@@ -119,7 +119,7 @@ export default function AboutPage() {
         </div>
       </motion.section>
 
-      {/* 2. Photographers Guide Section */}
+      {/* Photographers Guide Section */}
       <motion.section
         className="max-w-6xl mx-auto mt-10 md:mt-25"
         initial="hidden"
