@@ -22,7 +22,7 @@ export async function loginAdmin(formData: FormData) {
   const password = String(formData.get("password") ?? "");
 
   // Cloudflare의 환경변수(Secrets 포함) 바인딩 객체를 직접 가져오기
-  const { env } = await getCloudflareContext();
+  const { env } = (await getCloudflareContext()) as any;
 
   // process.env 대신 env 객체에서 값 추출 (로컬/Vercel 호환을 위해 폴백 유지)
   const adminId = env.ADMIN_ID || process.env.ADMIN_ID;
