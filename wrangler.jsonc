@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "beyond-snap",
+  "name": "beyondsnap-2026",
   "main": ".open-next/worker.js",
   // 오늘 날짜로 유지하세요. nodejs_compat을 쓰려면 2024-09-23 이후 날짜여야 합니다.
   "compatibility_date": "2026-08-18",
