@@ -24,6 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = settings.intro_text || "눈부신 오늘의 순간을 기록합니다.";
 
   return {
+    metadataBase: new URL("https://beyondsnap.co.kr"),
     title,
     description,
     openGraph: {
@@ -31,6 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       locale: "ko_KR",
       type: "website",
+      images: ["/images/logo.png"],
     },
 
     // 개발중 색인 차단
