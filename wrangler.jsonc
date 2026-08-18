@@ -1,35 +1,52 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "beyondsnap-2026",
-  "main": ".open-next/worker.js",
-  // 오늘 날짜로 유지하세요. nodejs_compat을 쓰려면 2024-09-23 이후 날짜여야 합니다.
-  "compatibility_date": "2026-08-18",
-  "compatibility_flags": ["nodejs_compat"],
-  "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "beyondsnap-2026",
+	"main": ".open-next/worker.js",
+	// 오늘 날짜로 유지하세요. nodejs_compat을 쓰려면 2024-09-23 이후 날짜여야 합니다.
+	"compatibility_date": "2026-08-18",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"services": [
+		{
+			"binding": "WORKER_SELF_REFERENCE",
+			"service": "beyondsnap-2026"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "NEXT_INC_CACHE_R2_BUCKET",
+			"bucket_name": "beyondsnap-isr-cache"
+		}
+	],
+	"vars": {
+		"ADMIN_ID": "beyond",
+		"R2_ACCOUNT_ID": "2b05fd7b474693e6dae62f74435f6aac",
+		"R2_BUCKET_NAME": "beyondsnap-2026",
+		"R2_PUBLIC_URL": "https://pub-5f857c66ea3442de99444083448b8a00.r2.dev",
+		"NEXT_PUBLIC_SUPABASE_URL": "https://rifoydovuqztdkyzrinu.supabase.co",
+		"NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_YcDGvlaLG32aEv6J5X3VJg_L8yofesF"
+	},
+	"durable_objects": {
+    "bindings": [
+      { "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" }
+    ]
   },
-  "observability": {
-    "enabled": true
-  },
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "beyondsnap-2026"
-    }
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["DOQueueHandler"] }
   ],
-  "r2_buckets": [
-    {
-      "binding": "NEXT_INC_CACHE_R2_BUCKET",
-      "bucket_name": "beyondsnap-isr-cache"
-    }
-  ],
-  "vars": {
-    "ADMIN_ID": "beyond",
-    "R2_ACCOUNT_ID": "2b05fd7b474693e6dae62f74435f6aac",
-    "R2_BUCKET_NAME": "beyondsnap-2026",
-    "R2_PUBLIC_URL": "https://pub-5f857c66ea3442de99444083448b8a00.r2.dev",
-    "NEXT_PUBLIC_SUPABASE_URL": "https://rifoydovuqztdkyzrinu.supabase.co",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_YcDGvlaLG32aEv6J5X3VJg_L8yofesF"
-  }
+	"d1_databases": [
+		{
+			"binding": "NEXT_TAG_CACHE_D1",
+			"database_name": "beyondsnap-tag-cache",
+			"database_id": "77f24666-09dc-4f3d-9d5b-d82ace6620e0"
+		}
+	]
 }
