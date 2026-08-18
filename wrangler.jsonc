@@ -9,6 +9,21 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "observability": {
+    "enabled": true
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "beyondsnap-2026"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "beyondsnap-isr-cache"
+    }
+  ],
   "vars": {
     "ADMIN_ID": "beyond",
     "R2_ACCOUNT_ID": "2b05fd7b474693e6dae62f74435f6aac",
@@ -16,14 +31,5 @@
     "R2_PUBLIC_URL": "https://pub-5f857c66ea3442de99444083448b8a00.r2.dev",
     "NEXT_PUBLIC_SUPABASE_URL": "https://rifoydovuqztdkyzrinu.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_YcDGvlaLG32aEv6J5X3VJg_L8yofesF"
-  },
-  "observability": {
-    "enabled": true
   }
-
-  // 참고: R2 사진 업로드는 이미 presigned URL 방식(브라우저 -> R2 직접)이라
-  // 여기에 별도 R2 바인딩을 추가하지 않아도 됩니다.
-  // 나중에 ISR 캐시를 R2/KV에 영구 저장하고 싶어지면 이 파일에
-  // "r2_buckets" 또는 "kv_namespaces" 항목을 추가하고
-  // open-next.config.ts에서 incrementalCache 옵션으로 연결하면 됩니다.
 }
