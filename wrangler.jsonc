@@ -9,6 +9,14 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "vars": {
+    "ADMIN_ID": "beyond",
+    "R2_ACCOUNT_ID": "2b05fd7b474693e6dae62f74435f6aac",
+    "R2_BUCKET_NAME": "beyondsnap-2026",
+    "R2_PUBLIC_URL": "https://pub-5f857c66ea3442de99444083448b8a00.r2.dev",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://rifoydovuqztdkyzrinu.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_YcDGvlaLG32aEv6J5X3VJg_L8yofesF"
+  },
   "observability": {
     "enabled": true
   }
