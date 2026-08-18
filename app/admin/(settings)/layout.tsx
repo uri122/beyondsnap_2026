@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { logoutAdmin } from "@/app/actions/auth";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { logoutAdmin } from "@/app/actions/auth";
+import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/auth/session";
 
 const ADMIN_NAV = [
   // { href: "/admin/dashboard", label: "대시보드" },
@@ -11,11 +13,19 @@ const ADMIN_NAV = [
   { href: "/admin/faq", label: "FAQ 관리" },
 ];
 
-export default function AdminDashboardLayout({
+export default async function AdminDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const isValidSession = await verifySessionToken(
+    cookieStore.get(ADMIN_SESSION_COOKIE)?.value,
+  );
+  if (!isValidSession) {
+    redirect("/admin/login");
+  }
+
   async function handleLogout() {
     "use server";
     await logoutAdmin();
