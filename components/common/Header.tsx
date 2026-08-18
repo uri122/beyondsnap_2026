@@ -10,7 +10,7 @@ import { Menu, X, ChevronDown, MessageCircle } from "lucide-react";
 const NAV_ITEMS = [
   { href: "/about", label: "ABOUT" },
   { href: "/ceremony", label: "CEREMONY" },
-  { href: "/iphonesnap", label: "I-BEYOND" },
+  // { href: "/iphonesnap", label: "I-BEYOND" }, // 데이터 채우기전 일시 숨김
   { href: "/films", label: "FILMS" },
   { href: "/products", label: "PRODUCTS" },
   { href: "/faq", label: "FAQ" },
