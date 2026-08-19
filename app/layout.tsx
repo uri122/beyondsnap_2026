@@ -15,6 +15,7 @@ const lora = Lora({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-lora",
+  preload: false,
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,7 +33,6 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       locale: "ko_KR",
       type: "website",
-      images: ["/images/logo.png"],
     },
   };
 }
