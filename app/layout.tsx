@@ -34,13 +34,6 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       images: ["/images/logo.png"],
     },
-
-    // 개발중 색인 차단
-    robots: {
-      index: false,
-      follow: false,
-      nocache: true,
-    },
   };
 }
 
