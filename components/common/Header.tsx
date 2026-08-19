@@ -115,7 +115,7 @@ export function Header({
               className="relative block h-auto w-[160px] aspect-[3/1] lg:h-full lg:w-auto lg:aspect-[3/1]"
             >
               <Image
-                src="/images/logo.png"
+                src="/images/logo_2026.png"
                 alt="Beyond Snap Photography"
                 loading="eager"
                 quality={100}

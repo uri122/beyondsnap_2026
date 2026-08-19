@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="w-screen max-w-full border-t border-border bg-muted/30 flex flex-col-reverse items-center px-4 py-6 sm:p-6 sm:flex-row lg:px-12 4xl:px-16">
       <div className="py-4">
         <Image
-          src="/images/logo.png"
+          src="/images/logo_2026.png"
           alt="Beyond Snap Photography"
           width={467}
           height={132}
