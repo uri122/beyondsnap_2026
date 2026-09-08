@@ -31,7 +31,6 @@
     "tailwind-merge": "^2.4.0",
     "tw-animate-css": "^1.2.0",
     "typescript": "^5.4.0",
-    "yet-another-react-lightbox": "^3.19.0",
     "zustand": "^4.5.0"
   },
   "devDependencies": {
