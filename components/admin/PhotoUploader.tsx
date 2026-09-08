@@ -2,24 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createUploadUrl, confirmPhotoUpload } from "@/app/actions/photos";
-import {
-  resizeImageFile,
-  createCroppedThumbnail,
-  uploadFileDirect,
-  runWithConcurrency,
-} from "@/lib/client/upload";
+import { runWithConcurrency } from "@/lib/client/upload";
+import { uploadGalleryPhoto } from "@/lib/client/gallery-upload";
 import { useUploadQueueStore } from "@/store/useUploadQueueStore";
 import { PhotoDropzone } from "@/components/admin/PhotoDropzone";
 import {
-  GALLERY_PHOTO_MAX_DIMENSION,
-  GALLERY_PHOTO_QUALITY,
   GALLERY_PHOTO_MAX_FILE_SIZE_MB,
   GALLERY_PHOTO_UPLOAD_CONCURRENCY,
   GALLERY_PHOTO_UPLOAD_HINT,
-  GALLERY_THUMBNAIL_ASPECT,
-  GALLERY_THUMBNAIL_WIDTH,
-  GALLERY_THUMBNAIL_QUALITY,
 } from "@/lib/upload-config";
 
 export function PhotoUploader({
@@ -62,78 +52,14 @@ export function PhotoUploader({
       async (item, index) => {
         setStatus(item.id, "uploading");
 
-        const {
-          file: fileToSend,
-          width,
-          height,
-        } = await resizeImageFile(
-          item.file,
-          GALLERY_PHOTO_MAX_DIMENSION,
-          GALLERY_PHOTO_QUALITY,
-        );
-
-        let thumbFile: File | null = null;
-        try {
-          thumbFile = await createCroppedThumbnail(
-            item.file,
-            GALLERY_THUMBNAIL_ASPECT,
-            GALLERY_THUMBNAIL_WIDTH,
-            GALLERY_THUMBNAIL_QUALITY,
-          );
-        } catch {
-          // 무시하고 원본으로 폴백
-        }
-
-        const urlResult = await createUploadUrl({
+        const result = await uploadGalleryPhoto({
           galleryId,
-          fileName: fileToSend.name,
-          contentType: fileToSend.type,
-        });
-        if (!urlResult.success) {
-          setStatus(item.id, "error");
-          return;
-        }
-
-        let thumbnailUrl: string | undefined;
-        if (thumbFile) {
-          const thumbUrlResult = await createUploadUrl({
-            galleryId,
-            fileName: thumbFile.name,
-            contentType: thumbFile.type,
-          });
-          if (thumbUrlResult.success) {
-            try {
-              await uploadFileDirect(
-                thumbFile,
-                thumbUrlResult.uploadUrl,
-                () => {},
-              );
-              thumbnailUrl = thumbUrlResult.publicUrl;
-            } catch {
-              // 무시
-            }
-          }
-        }
-
-        try {
-          await uploadFileDirect(fileToSend, urlResult.uploadUrl, (percent) =>
-            updateProgress(item.id, percent),
-          );
-        } catch {
-          setStatus(item.id, "error");
-          return;
-        }
-
-        const confirmResult = await confirmPhotoUpload({
-          galleryId,
-          imageUrl: urlResult.publicUrl,
-          thumbnailUrl,
+          file: item.file,
           sortOrder: existingCount + index,
-          width,
-          height,
+          onProgress: (percent) => updateProgress(item.id, percent),
         });
 
-        setStatus(item.id, confirmResult.success ? "done" : "error");
+        setStatus(item.id, result.success ? "done" : "error");
       },
     );
 

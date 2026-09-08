@@ -5,14 +5,11 @@ import { useRouter } from "next/navigation";
 import { isSupabaseConfigured } from "@/lib/env";
 import { CEREMONY_CATEGORIES } from "@/lib/categories";
 import { createGallery, setCoverImage } from "@/app/actions/galleries";
-import { createUploadUrl, confirmPhotoUpload } from "@/app/actions/photos";
 import {
-  resizeImageFile,
   createPreviewThumbnail,
-  createCroppedThumbnail,
-  uploadFileDirect,
   runWithConcurrency,
 } from "@/lib/client/upload";
+import { uploadGalleryPhoto } from "@/lib/client/gallery-upload";
 import type { CeremonyCategory, SnapType } from "@/types/database";
 import {
   DndContext,
@@ -32,14 +29,9 @@ import {
 import { useSortableItem } from "@/hooks/useSortableItem";
 import { PhotoDropzone } from "@/components/admin/PhotoDropzone";
 import {
-  GALLERY_PHOTO_MAX_DIMENSION as RESIZE_MAX_DIMENSION,
-  GALLERY_PHOTO_QUALITY as RESIZE_QUALITY,
   GALLERY_PHOTO_MAX_FILE_SIZE_MB as MAX_FILE_SIZE_MB,
   GALLERY_PHOTO_UPLOAD_CONCURRENCY as UPLOAD_CONCURRENCY,
   GALLERY_PHOTO_UPLOAD_HINT,
-  GALLERY_THUMBNAIL_ASPECT,
-  GALLERY_THUMBNAIL_WIDTH,
-  GALLERY_THUMBNAIL_QUALITY,
 } from "@/lib/upload-config";
 
 type QueuedPhoto = {
@@ -240,70 +232,14 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
   ) {
     updatePhoto(photo.id, { status: "uploading", progress: 0 });
 
-    const {
-      file: fileToSend,
-      width,
-      height,
-    } = await resizeImageFile(photo.file, RESIZE_MAX_DIMENSION, RESIZE_QUALITY);
-
-    // 리스트용 크롭 썸네일 준비 (실패해도 원본 업로드는 계속 진행)
-    let thumbFile: File | null = null;
-    try {
-      thumbFile = await createCroppedThumbnail(
-        photo.file,
-        GALLERY_THUMBNAIL_ASPECT,
-        GALLERY_THUMBNAIL_WIDTH,
-        GALLERY_THUMBNAIL_QUALITY,
-      );
-    } catch {
-      // 무시하고 원본으로 폴백
-    }
-
-    const urlResult = await createUploadUrl({
+    const result = await uploadGalleryPhoto({
       galleryId,
-      fileName: fileToSend.name,
-      contentType: fileToSend.type,
-    });
-    if (!urlResult.success) {
-      updatePhoto(photo.id, { status: "error" });
-      return { success: false as const, name: photo.file.name };
-    }
-
-    let thumbnailUrl: string | undefined;
-    if (thumbFile) {
-      const thumbUrlResult = await createUploadUrl({
-        galleryId,
-        fileName: thumbFile.name,
-        contentType: thumbFile.type,
-      });
-      if (thumbUrlResult.success) {
-        try {
-          await uploadFileDirect(thumbFile, thumbUrlResult.uploadUrl, () => {});
-          thumbnailUrl = thumbUrlResult.publicUrl;
-        } catch {
-          // 무시
-        }
-      }
-    }
-
-    try {
-      await uploadFileDirect(fileToSend, urlResult.uploadUrl, (percent) =>
-        updatePhoto(photo.id, { progress: percent }),
-      );
-    } catch {
-      updatePhoto(photo.id, { status: "error" });
-      return { success: false as const, name: photo.file.name };
-    }
-
-    const confirmResult = await confirmPhotoUpload({
-      galleryId,
-      imageUrl: urlResult.publicUrl,
-      thumbnailUrl,
+      file: photo.file,
       sortOrder,
-      width,
-      height,
+      onProgress: (percent) => updatePhoto(photo.id, { progress: percent }),
     });
-    if (!confirmResult.success) {
+
+    if (!result.success) {
       updatePhoto(photo.id, { status: "error" });
       return { success: false as const, name: photo.file.name };
     }
@@ -311,8 +247,8 @@ export function GalleryComposer({ snapType }: { snapType: SnapType }) {
     updatePhoto(photo.id, { status: "done", progress: 100 });
     return {
       success: true as const,
-      imageUrl: urlResult.publicUrl,
-      thumbnailUrl,
+      imageUrl: result.imageUrl,
+      thumbnailUrl: result.thumbnailUrl,
       isCover: photo.id === coverId,
     };
   }
