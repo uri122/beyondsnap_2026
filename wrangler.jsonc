@@ -1,11 +1,14 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "beyondsnap-2026",
-	"main": ".open-next/worker.js",
-	"compatibility_date": "2026-08-18",
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
+	"main": "custom-worker.ts",
+ 	"compatibility_date": "2026-08-18",
+ 	"compatibility_flags": [
+ 		"nodejs_compat"
+ 	],
+	"triggers": {
+		"crons": ["0 3 * * *"]
+	},
 	"workers_dev": false,
 	"assets": {
 		"directory": ".open-next/assets",
