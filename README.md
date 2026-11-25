@@ -1,7 +1,7 @@
 # 비욘드스냅 (Beyond Snap) 사이트 리뉴얼
 
-웨딩 스냅 스튜디오 [beyondsnap.co.kr](https://beyondsnap.co.kr) 공식 사이트 리뉴얼 프로젝트
-클라이언트 협의부터 개발, 배포, 작가용 관리자 화면까지 1인 진행한 외주 프로젝트
+**웨딩 스냅 스튜디오 [beyondsnap.co.kr](https://beyondsnap.co.kr) 공식 사이트 리뉴얼 프로젝트**<br>
+**클라이언트 협의부터 개발, 배포, 작가용 관리자 화면까지 1인 진행한 외주 프로젝트**
 
 ![메인 페이지 PC 화면](docs/images/screenshot_pc_main.jpg)
 ![메인 페이지 mobile 화면](docs/images/screenshot_mobile_main.jpg)
@@ -21,8 +21,7 @@
 
 ## 1. 프로젝트 배경
 
-작가에게 사진은 곧 상품, 포트폴리오 사이트가 가장 중요한 영업 채널
-클라이언트와 협의한 요구사항은 다음과 같음
+작가에게 사진은 곧 상품, 포트폴리오 사이트가 가장 중요한 영업 채널로 클라이언트와 협의한 요구사항은 다음과 같음
 
 - 문의 유입 대부분이 모바일, 모바일 퍼스트 설계
 - 고화질 사진 노출과 빠른 로딩 동시 만족
@@ -120,24 +119,3 @@
 | 이미지 로딩 중 레이아웃 흔들림        | 이미지 크기를 모른 채 렌더링                                    | 업로드 시 `width/height` 저장, `aspect-ratio` 선지정               |
 
 ---
-
----
-
-<details>
-<summary>로컬 실행 방법</summary>
-
-```bash
-npm install
-npm run dev        # http://localhost:3000
-npm run typecheck
-npm run deploy     # OpenNext 빌드 + Cloudflare 배포
-```
-
-필요한 환경변수 (`.env.local`)
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
-`ADMIN_ID`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`,
-`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL`
-
-DB 스키마: `supabase/schema.sql`을 Supabase SQL Editor에서 실행
-
-</details>
