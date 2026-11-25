@@ -6,7 +6,6 @@
 ![메인 페이지 PC 화면](docs/images/screenshot_pc_main.jpg)
 ![메인 페이지 mobile 화면](docs/images/screenshot_mobile_main.jpg)
 ![갤러리 상세 페이지 mobile 화면](docs/images/screenshot_mobile_detail.jpg)
-
 ![관리자 페이지 PC 화면](docs/images/ani_admin.gif)
 
 | 항목 | 내용                                                                                |
